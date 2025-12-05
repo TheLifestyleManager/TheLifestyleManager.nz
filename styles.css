@@ -1049,6 +1049,7 @@ ol {
   padding: 18px 22px;
   cursor: pointer;
   text-align: left;
+  color: var(--ink);
 }
 
 .service-group .service-toggle:focus-visible {
@@ -1091,8 +1092,12 @@ ol {
   border-top: 1px solid var(--border);
 }
 
-.service-group .service-body[hidden] {
+.has-nav-js .service-group .service-body {
   display: none;
+}
+
+.has-nav-js .service-group.is-open .service-body {
+  display: block;
 }
 
 .service-group.is-open .chevron {
