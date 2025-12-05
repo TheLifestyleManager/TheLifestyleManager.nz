@@ -126,8 +126,13 @@
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="site-logo">The Lifestyle Manager</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
-        <span class="sr-only">Toggle navigation</span>
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+        aria-controls="primary-navigation"
+      >
         <span></span>
         <span></span>
         <span></span>
@@ -568,21 +573,50 @@
 
     const navToggle = document.querySelector('.nav-toggle');
     const siteNav = document.querySelector('.site-nav');
+    const mobileQuery = window.matchMedia('(max-width: 720px)');
+
+    const closeMenu = () => {
+      if (!navToggle || !siteNav) return;
+      navToggle.setAttribute('aria-expanded', 'false');
+      siteNav.classList.remove('is-open');
+      siteNav.setAttribute('aria-hidden', 'true');
+    };
+
+    const syncMenuState = () => {
+      if (!navToggle || !siteNav) return;
+      const isMobile = mobileQuery.matches;
+      if (!isMobile) {
+        navToggle.setAttribute('aria-expanded', 'false');
+        siteNav.classList.remove('is-open');
+        siteNav.removeAttribute('aria-hidden');
+        return;
+      }
+
+      siteNav.classList.remove('is-open');
+      siteNav.setAttribute('aria-hidden', 'true');
+      navToggle.setAttribute('aria-expanded', 'false');
+    };
 
     navToggle?.addEventListener('click', () => {
+      if (!siteNav) return;
       const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-      navToggle.setAttribute('aria-expanded', String(!expanded));
-      siteNav?.classList.toggle('is-open');
+      const nextState = !expanded;
+
+      navToggle.setAttribute('aria-expanded', String(nextState));
+      siteNav.classList.toggle('is-open', nextState);
+      siteNav.toggleAttribute('aria-hidden', !nextState);
     });
 
     document.addEventListener('click', (event) => {
       if (!siteNav || !navToggle || !siteNav.classList.contains('is-open')) return;
       const target = event.target;
       if (!siteNav.contains(target) && !navToggle.contains(target)) {
-        siteNav.classList.remove('is-open');
-        navToggle.setAttribute('aria-expanded', 'false');
+        closeMenu();
       }
     });
+
+    mobileQuery.addEventListener('change', syncMenuState);
+    syncMenuState();
   </script>
 </body>
 </html>
