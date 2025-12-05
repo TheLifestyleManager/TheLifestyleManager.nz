@@ -289,9 +289,10 @@ ol {
 
 .hero-highlights li {
   padding: 10px 12px;
-  background: rgba(247, 246, 243, 0.08);
+  background: rgba(247, 246, 243, 0.14);
   border-radius: 12px;
-  border: 1px solid rgba(247, 246, 243, 0.12);
+  border: 1px solid rgba(247, 246, 243, 0.24);
+  color: #f7f6f2;
   font-weight: 600;
 }
 
@@ -323,11 +324,12 @@ ol {
   padding: 24px;
   border: 1px solid rgba(247, 246, 243, 0.22);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+  color: rgba(15, 27, 45, 0.92);
 }
 
 .hero-panel h3 {
   margin-top: 0;
-  color: #f7f6f2;
+  color: var(--ink);
 }
 
 .hero-panel-kicker {
@@ -351,7 +353,7 @@ ol {
   display: flex;
   gap: 10px;
   align-items: center;
-  color: rgba(247, 246, 243, 0.86);
+  color: rgba(15, 27, 45, 0.9);
 }
 
 .hero-panel .dot {
