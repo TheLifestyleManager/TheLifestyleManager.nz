@@ -734,6 +734,12 @@ ol {
   align-items: start;
 }
 
+.testimonial-share {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+}
+
 .testimonial-card {
   background: linear-gradient(145deg, #ffffff, #f7f5ef);
   border-radius: 18px;
