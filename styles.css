@@ -709,11 +709,13 @@ ol {
 }
 
 .services-detail .section-inner,
-.pricing-packages .section-inner {
+.pricing-packages .section-inner,
+.additional-capabilities .section-inner {
   padding: 70px 0;
 }
 
-.services-detail .service-group {
+.services-detail .service-group,
+.additional-capabilities .service-group {
   background: var(--panel);
   border-radius: 16px;
   border: 1px solid var(--border);
@@ -722,11 +724,28 @@ ol {
   margin-bottom: 18px;
 }
 
-.services-detail ul {
+.gold-bullets {
   list-style: none;
   padding: 0;
   display: grid;
   gap: 10px;
+}
+
+.gold-bullets li {
+  position: relative;
+  padding-left: 18px;
+}
+
+.gold-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px rgba(192, 160, 112, 0.14);
 }
 
 .pricing-grid {
