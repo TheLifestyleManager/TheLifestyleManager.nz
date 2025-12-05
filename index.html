@@ -515,48 +515,64 @@
 
         <div class="testimonial-grid">
           <article class="testimonial-card">
-            <blockquote>
-              <p>
-                Josh came into my life and helped me clean up, organise, and structure everything with precision. His knowledge
-                of technology and systems made my whole world feel more streamlined and smooth to run.
-              </p>
+            <div class="testimonial-top">
+              <div class="testimonial-quote-mark" aria-hidden="true">“</div>
+              <div>
+                <p class="testimonial-name">Brooke — Waiheke</p>
+              </div>
+            </div>
+            <div class="testimonial-body">
+              <blockquote>
+                <p>
+                  Josh came into my life and helped me clean up, organise, and structure everything with precision. His knowledge
+                  of technology and systems made my whole world feel more streamlined and smooth to run.
+                </p>
 
-              <p>
-                He supported me to sort out a lot in my business, cleaned up my digital systems, and taught me how to use and
-                optimise AI in ways that genuinely improved my workflow. He also helped me reach the right audiences and finally
-                tick off the little tasks I kept avoiding and the things that sit on the to-do list forever! Having Josh’s
-                support to get them done has freed me up to focus on the parts of my business I love.
-              </p>
+                <p>
+                  He supported me to sort out a lot in my business, cleaned up my digital systems, and taught me how to use and
+                  optimise AI in ways that genuinely improved my workflow. He also helped me reach the right audiences and finally
+                  tick off the little tasks I kept avoiding and the things that sit on the to-do list forever! Having Josh’s
+                  support to get them done has freed me up to focus on the parts of my business I love.
+                </p>
 
-              <p>
-                Josh brings positivity, calmness, and a clear sense of what needs to happen to bring everything into harmony. He
-                explains things in a way that makes the complicated feel simple, and his honesty and depth of knowledge have been
-                such a gift. My life feels more refined and organised because of his support.
-              </p>
+                <p>
+                  Josh brings positivity, calmness, and a clear sense of what needs to happen to bring everything into harmony. He
+                  explains things in a way that makes the complicated feel simple, and his honesty and depth of knowledge have been
+                  such a gift. My life feels more refined and organised because of his support.
+                </p>
 
-              <p>
-                Thank you, Josh. I highly recommend this wonderful man and his services.
-              </p>
-            </blockquote>
-            <p class="testimonial-name">Brooke — Waiheke</p>
+                <p>
+                  Thank you, Josh. I highly recommend this wonderful man and his services.
+                </p>
+              </blockquote>
+            </div>
+            <button type="button" class="testimonial-toggle" aria-expanded="false">Show more</button>
           </article>
 
           <article class="testimonial-card">
-            <blockquote>
-              <p>
-                Josh&#39;s help in finding a new phone made the experience so much easier. I shared the things that mattered most to
-                me, and he took it on from there. Researching options, sending me his thoughts, and sharing short video reviews to
-                help me understand each choice.
-              </p>
+            <div class="testimonial-top">
+              <div class="testimonial-quote-mark" aria-hidden="true">“</div>
+              <div>
+                <p class="testimonial-name">Shakara — Christchurch</p>
+              </div>
+            </div>
+            <div class="testimonial-body">
+              <blockquote>
+                <p>
+                  Josh&#39;s help in finding a new phone made the experience so much easier. I shared the things that mattered most to
+                  me, and he took it on from there. Researching options, sending me his thoughts, and sharing short video reviews to
+                  help me understand each choice.
+                </p>
 
-              <p>
-                What I appreciate most is that he genuinely enjoys doing this. Something that usually feels overwhelming and
-                time-consuming for me comes naturally to him, and his enthusiasm makes the whole process lighter, easier, and
-                even fun. It felt like a potentially stressful task was turned into a supported and enjoyable experience. I deeply
-                value the care and clarity I received through the process. I couldn’t have asked for better guidance.
-              </p>
-            </blockquote>
-            <p class="testimonial-name">Shakara — Christchurch</p>
+                <p>
+                  What I appreciate most is that he genuinely enjoys doing this. Something that usually feels overwhelming and
+                  time-consuming for me comes naturally to him, and his enthusiasm makes the whole process lighter, easier, and
+                  even fun. It felt like a potentially stressful task was turned into a supported and enjoyable experience. I deeply
+                  value the care and clarity I received through the process. I couldn’t have asked for better guidance.
+                </p>
+              </blockquote>
+            </div>
+            <button type="button" class="testimonial-toggle" aria-expanded="false">Show more</button>
           </article>
         </div>
       </div>
@@ -708,6 +724,39 @@
 
     mobileQuery.addEventListener('change', syncMenuState);
     syncMenuState();
+
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+
+    testimonialCards.forEach((card) => {
+      const body = card.querySelector('.testimonial-body');
+      const toggle = card.querySelector('.testimonial-toggle');
+
+      if (!body || !toggle) return;
+
+      const collapsedHeight = Number(body.dataset?.collapsedHeight) || 220;
+      const needsToggle = body.scrollHeight > collapsedHeight + 6;
+      body.style.setProperty('--collapsed-height', `${collapsedHeight}px`);
+
+      const setState = (expanded) => {
+        card.classList.toggle('is-expanded', expanded);
+        card.classList.toggle('is-collapsed', !expanded);
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        toggle.textContent = expanded ? 'Show less' : 'Show more';
+      };
+
+      if (!needsToggle) {
+        toggle.hidden = true;
+        body.style.maxHeight = 'none';
+        return;
+      }
+
+      setState(false);
+
+      toggle.addEventListener('click', () => {
+        const expanded = card.classList.contains('is-expanded');
+        setState(!expanded);
+      });
+    });
   </script>
 </body>
 </html>
