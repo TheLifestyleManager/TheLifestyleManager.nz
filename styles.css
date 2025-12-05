@@ -202,7 +202,7 @@ ol {
   margin: 0 auto;
   display: grid;
   gap: 32px;
-  grid-template-columns: 1.05fr 0.9fr;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
 }
 
@@ -247,9 +247,8 @@ ol {
 .hero-highlights {
   list-style: none;
   padding: 0;
-  margin: 20px 0;
-  display: flex;
-  flex-wrap: wrap;
+  margin: 12px 0 20px;
+  display: grid;
   gap: 10px;
 }
 
@@ -261,11 +260,23 @@ ol {
   font-weight: 600;
 }
 
+.hero-support-label {
+  margin: 18px 0 6px;
+  font-weight: 700;
+  color: #f7f6f2;
+  letter-spacing: 0.01em;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 6px;
+}
+
+.hero-panel-section {
+  padding: 0 0 96px;
+  background: linear-gradient(180deg, rgba(12, 26, 48, 0.02), rgba(12, 26, 48, 0.06));
 }
 
 .hero-panel {
@@ -282,6 +293,15 @@ ol {
 .hero-panel h3 {
   margin-top: 0;
   color: #f7f6f2;
+}
+
+.hero-panel-kicker {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent);
 }
 
 .hero-panel ul {
