@@ -331,9 +331,9 @@ ol {
 }
 
 .hero-headshot-inline {
-  width: 82px;
-  height: 82px;
-  margin-top: 4px;
+  width: clamp(110px, 10vw, 150px);
+  height: clamp(110px, 10vw, 150px);
+  margin-top: 6px;
 }
 
 .hero-subtitle {
@@ -418,8 +418,8 @@ ol {
 }
 
 .hero-headshot {
-  width: 92px;
-  height: 92px;
+  width: clamp(110px, 10vw, 150px);
+  height: clamp(110px, 10vw, 150px);
   border-radius: 22px;
   overflow: hidden;
   border: 2px solid rgba(247, 246, 243, 0.8);
