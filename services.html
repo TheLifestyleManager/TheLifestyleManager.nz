@@ -15,7 +15,13 @@
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="site-logo">The Lifestyle Manager</a>
-      <nav class="site-nav">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+        <span class="sr-only">Toggle navigation</span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="site-nav" id="primary-navigation">
         <a href="index.html">Home</a>
         <a href="index.html#about">About</a>
         <a href="services.html" class="active">Services</a>
@@ -201,6 +207,28 @@
       document.getElementById('year').textContent = new Date().getFullYear();
     </script>
   </footer>
+
+  <script>
+    document.documentElement.classList.add('has-nav-js');
+
+    const navToggle = document.querySelector('.nav-toggle');
+    const siteNav = document.querySelector('.site-nav');
+
+    navToggle?.addEventListener('click', () => {
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', String(!expanded));
+      siteNav?.classList.toggle('is-open');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!siteNav || !navToggle || !siteNav.classList.contains('is-open')) return;
+      const target = event.target;
+      if (!siteNav.contains(target) && !navToggle.contains(target)) {
+        siteNav.classList.remove('is-open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
 
 </body>
 </html>
