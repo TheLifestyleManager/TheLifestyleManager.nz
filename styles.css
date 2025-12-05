@@ -44,6 +44,23 @@ a:focus-visible {
   background: var(--muted);
 }
 
+.callout {
+  background: #fff7ed;
+  border-left: 4px solid var(--accent);
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #1f1f1f;
+  margin-top: 12px;
+}
+
+.highlight-list {
+  list-style: disc;
+  padding-left: 22px;
+  margin: 14px 0 0;
+  display: grid;
+  gap: 6px;
+}
+
 h1, h2, h3, h4 {
   line-height: 1.2;
   margin: 0 0 16px;
@@ -194,6 +211,13 @@ ul, ol {
   margin-top: 24px;
 }
 
+.benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
 .card {
   background: var(--card);
   border-radius: 12px;
@@ -280,6 +304,12 @@ ul, ol {
   margin: 12px 0 0;
   display: grid;
   gap: 8px;
+}
+
+.form-note {
+  margin-top: 14px;
+  font-size: 0.95rem;
+  color: #2d2d2d;
 }
 
 .site-footer {

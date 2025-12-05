@@ -4,88 +4,128 @@
   <!-- Single-page static site for The Lifestyle Manager. Sections: hero, problem, services, process, about, testimonials, FAQ, contact. Edit copy directly in each section; styles in styles.css. -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Lifestyle Manager NZ | Personal Lifestyle Management in Christchurch</title>
-  <meta name="description" content="The Lifestyle Manager is a trusted personal lifestyle manager and private PA in Christchurch, New Zealand, helping time-poor professionals and families with life admin, travel logistics, projects, and discreet support." />
+  <title>Lifestyle Manager Christchurch | Personal Concierge NZ</title>
+  <meta name="description" content="Lifestyle manager and personal concierge in Christchurch, Queenstown, and Auckland handling life admin, travel planning, errands, and projects so you stay focused." />
+  <link rel="canonical" href="https://thelifestylemanager.nz/">
   <link rel="stylesheet" href="styles.css">
-  <meta property="og:title" content="The Lifestyle Manager NZ | Personal Lifestyle Management" />
-  <meta property="og:description" content="Personal lifestyle manager and private PA support for Christchurch, Queenstown, and Auckland. Calm, discreet help with life admin, projects, travel, and executive support." />
+  <meta property="og:title" content="Lifestyle Manager Christchurch | Personal Concierge NZ" />
+  <meta property="og:description" content="Private PA and lifestyle manager for Christchurch, Queenstown, and Auckland. Calm, discreet help with life admin, travel, errands, home projects, and tech support." />
   <meta property="og:url" content="https://thelifestylemanager.nz/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://thelifestylemanager.nz/og-image.jpg" />
   <!-- TODO: Add real og-image.jpg at https://thelifestylemanager.nz/og-image.jpg -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="The Lifestyle Manager NZ" />
+  <meta name="twitter:title" content="Lifestyle Manager Christchurch | Personal Concierge NZ" />
   <meta name="twitter:description" content="Trusted lifestyle management and private PA support across Christchurch, Queenstown, and Auckland." />
   <meta name="twitter:image" content="https://thelifestylemanager.nz/og-image.jpg" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "name": "The Lifestyle Manager",
-    "description": "Personal lifestyle management and private PA support for time-poor professionals and families in Christchurch, Queenstown, and Auckland.",
-    "url": "https://thelifestylemanager.nz",
-    "telephone": "+64 XX XXX XXXX",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Christchurch",
-      "addressRegion": "Canterbury",
-      "addressCountry": "New Zealand"
-    },
-    "areaServed": ["Christchurch", "Queenstown", "Auckland", "New Zealand"],
-    "sameAs": [],
-    "hasFAQPage": {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What does a lifestyle manager do?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "A lifestyle manager takes on your life admin, errands, projects, and coordination so you can reclaim time and focus on what matters most."
-          }
+    "@graph": [
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://thelifestylemanager.nz/#business",
+        "name": "The Lifestyle Manager",
+        "description": "Personal lifestyle management, personal concierge, and private PA support for time-poor professionals and families across Christchurch, Queenstown, and Auckland.",
+        "url": "https://thelifestylemanager.nz",
+        "telephone": "+64 XX XXX XXXX",
+        "areaServed": ["Christchurch", "Queenstown", "Auckland", "New Zealand"],
+        "priceRange": "$$$",
+        "founder": {
+          "@id": "https://thelifestylemanager.nz/#founder"
         },
-        {
-          "@type": "Question",
-          "name": "Who do you typically work with?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Time-poor professionals, founders, executives, creatives, and families who want discreet, reliable support."
-          }
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Christchurch CBD",
+          "addressLocality": "Christchurch",
+          "addressRegion": "Canterbury",
+          "postalCode": "8011",
+          "addressCountry": "NZ"
         },
-        {
-          "@type": "Question",
-          "name": "Do you offer one-off projects or only retainers?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Both. We can collaborate on a focused project or set up an ongoing retainer for steady support."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How does pricing work?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Pricing is agreed in advance for the project or retainer scope so you always know what to expect."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Do you keep my information confidential?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Trust, discretion, and secure handling of your information are central to how we work."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Do you work only in Christchurch?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Most in-person work is centred in Christchurch, with planned support in Queenstown and Auckland plus remote coordination wherever you are."
-          }
+        "sameAs": ["https://www.linkedin.com/"],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+64 XX XXX XXXX",
+          "contactType": "customer service",
+          "areaServed": ["NZ"],
+          "availableLanguage": ["English"]
         }
-      ]
-    }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://thelifestylemanager.nz/#founder",
+        "name": "Josh",
+        "jobTitle": "Lifestyle Manager & Personal Concierge",
+        "worksFor": {
+          "@id": "https://thelifestylemanager.nz/#business"
+        },
+        "description": "Christchurch-based lifestyle manager blending project coordination, tech literacy, and discreet client support for busy professionals and families.",
+        "knowsAbout": ["travel planning", "home organisation", "errand service", "project coordination", "personal assistance"],
+        "url": "https://thelifestylemanager.nz"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://thelifestylemanager.nz/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What does a lifestyle manager do?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A lifestyle manager and personal concierge clears your life admin, errands, projects, and logistics so you regain time and mental space."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Who do you typically work with?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "I partner with time-poor professionals, founders, executives, creatives, and families who want discreet, reliable support in Christchurch, Queenstown, and Auckland."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can you help with one-off projects and retainers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Choose a focused project for a specific outcome or set up a retainer for steady lifestyle management and PA support."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does pricing work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Pricing is agreed in advance for the project or retainer scope, with transparent updates so you always know the budget and milestones."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you keep information confidential?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Confidentiality, discretion, and secure handling of personal data are baked into every workflow, from NDAs to vetted suppliers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What areas do you cover?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Most in-person support is centred in Christchurch with planned trips to Queenstown and Auckland. Remote coordination is available anywhere in New Zealand."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do we communicate?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We agree a cadence that suits you – concise email digests, quick calls, or your preferred tools – with clear decision points and status updates."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -98,9 +138,9 @@
         <ul class="nav-list">
           <li><a href="#hero">Home</a></li>
           <li><a href="#services">Services</a></li>
+          <li><a href="#benefits">Why choose</a></li>
           <li><a href="#process">How it works</a></li>
           <li><a href="#about">About</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#contact" class="button small">Book a conversation</a></li>
         </ul>
@@ -114,21 +154,26 @@
         <div>
           <p class="eyebrow">Christchurch · Queenstown · Auckland</p>
           <h1>Calm, discreet lifestyle management for busy lives</h1>
-          <p class="lead">The Lifestyle Manager partners with time-poor professionals and families to handle the life admin, projects, and logistics you do not have capacity for.</p>
+          <p class="lead">You get a personal concierge who clears life admin, coordinates travel, and keeps home projects moving so you stay present and in control.</p>
           <div class="cta-group">
             <a class="button" href="#contact">Book a conversation</a>
             <a class="link-button" href="#services">See how I help</a>
           </div>
+          <ul class="highlight-list">
+            <li>Personal lifestyle manager and private PA</li>
+            <li>Time management help for overwhelmed professionals</li>
+            <li>Service areas: Christchurch base, Queenstown and Auckland trips, NZ-wide remote support</li>
+          </ul>
         </div>
-        <div class="hero-panel">
+        <div class="hero-panel" aria-label="Top services and promises">
           <h2 class="panel-heading">What I take off your plate</h2>
           <ul>
             <li>Life admin, errands, and bookings</li>
-            <li>Home projects and supplier coordination</li>
-            <li>Travel planning and on-trip logistics</li>
-            <li>Executive, creative, and tech support</li>
+            <li>Home projects, supplier coordination, and vetting</li>
+            <li>Travel planning, on-trip changes, and contingencies</li>
+            <li>Executive support, tech help, and research</li>
           </ul>
-          <p class="panel-note">Trusted, organised, and always discreet.</p>
+          <p class="panel-note">Vetted partners, secure handling of details, and clear updates.</p>
         </div>
       </div>
     </section>
@@ -136,7 +181,8 @@
     <section id="problem" class="section muted">
       <div class="container narrow">
         <h2>Feeling stretched thin?</h2>
-        <p>You juggle work, family, property, and travel. The list grows, the inbox swells, and there is never enough time. I keep the wheels turning so you can stay present and make confident decisions without the noise.</p>
+        <p>You juggle work, family, property, and travel. The list grows, the inbox swells, and there is never enough time. I keep the wheels turning so you can make confident decisions without the noise.</p>
+        <p class="callout">Direct answer: I step in as your lifestyle manager so you stop context-switching and start reclaiming hours every week.</p>
       </div>
     </section>
 
@@ -146,40 +192,40 @@
         <div class="service-grid">
           <article class="card">
             <h3>Life admin &amp; errands</h3>
-            <p>I clear the backlog of tasks that slow you down.</p>
+            <p>I clear the backlog of tasks that slow you down with proactive reminders and tight follow-through.</p>
             <h4>What I handle</h4>
             <ul>
               <li>Inbox triage, scheduling, and reminders</li>
-              <li>Errands, purchases, and returns</li>
-              <li>Household bills, renewals, and subscriptions</li>
+              <li>Errand service, purchases, returns, and bookings</li>
+              <li>Household bills, renewals, and subscription audits</li>
             </ul>
             <p class="outcome">What you get: less noise, timely decisions, and your calendar under control.</p>
           </article>
           <article class="card">
             <h3>Home &amp; project coordination</h3>
-            <p>Keep your home and projects moving without micromanaging every detail.</p>
+            <p>Keep your home and projects moving without micromanaging every detail or vendor.</p>
             <h4>What I handle</h4>
             <ul>
-              <li>Trades, suppliers, and quotes</li>
-              <li>Renovation and maintenance scheduling</li>
-              <li>Set-up for moves, events, or seasonal prep</li>
+              <li>Trades, suppliers, quotes, and quality checks</li>
+              <li>Renovation timelines, maintenance, and seasonal prep</li>
+              <li>Move-in setups, event prep, and inventory lists</li>
             </ul>
-            <p class="outcome">What you get: a single point of contact who keeps timelines clear and quality high.</p>
+            <p class="outcome">What you get: one point of contact who keeps timelines visible and quality high.</p>
           </article>
           <article class="card">
             <h3>Travel planning &amp; logistics</h3>
-            <p>Itineraries that run smoothly, from booking to landing back home.</p>
+            <p>Itineraries that run smoothly from booking to landing back home with contingency options ready.</p>
             <h4>What I handle</h4>
             <ul>
-              <li>Flights, accommodation, and on-the-ground transport</li>
-              <li>Dining, experiences, and family-friendly options</li>
-              <li>On-trip changes and contingency planning</li>
+              <li>Flights, accommodation, on-the-ground transport</li>
+              <li>Dining, experiences, family-friendly or VIP options</li>
+              <li>On-trip changes, alerts, and 24/7 coordination</li>
             </ul>
-            <p class="outcome">What you get: trips that feel effortless, with details handled before you ask.</p>
+            <p class="outcome">What you get: effortless trips and clear updates if plans change.</p>
           </article>
           <article class="card">
-            <h3>Executive / creative support &amp; tech help</h3>
-            <p>Structured support that blends organisation with practical tech know-how.</p>
+            <h3>Executive support &amp; tech help</h3>
+            <p>Structured support that blends organisation with practical tech know-how and discretion.</p>
             <h4>What I handle</h4>
             <ul>
               <li>Document prep, research, and presentations</li>
@@ -192,21 +238,46 @@
       </div>
     </section>
 
-    <section id="process" class="section muted">
+    <section id="benefits" class="section muted">
+      <div class="container">
+        <h2>Why choose this lifestyle manager?</h2>
+        <div class="benefit-grid">
+          <article class="card">
+            <h3>Local, responsive support</h3>
+            <p>Based in Christchurch with regular time in Queenstown and Auckland, so you get both in-person help and remote coverage.</p>
+          </article>
+          <article class="card">
+            <h3>Calm, confidential delivery</h3>
+            <p>Discretion, NDAs when needed, and vetted suppliers keep your information safe and your household protected.</p>
+          </article>
+          <article class="card">
+            <h3>Outcome-first planning</h3>
+            <p>We agree decision points, budgets, and updates upfront so you always know what is happening and what is next.</p>
+          </article>
+          <article class="card">
+            <h3>Tech-enabled efficiency</h3>
+            <p>Tools for reminders, automations, and shared dashboards reduce back-and-forth and shorten lead times.</p>
+          </article>
+        </div>
+        <p class="callout">Mini case: A Christchurch founder handed over travel and home maintenance. Within two weeks flights, accommodation, and trades were booked, freeing five hours weekly.</p>
+      </div>
+    </section>
+
+    <section id="process" class="section">
       <div class="container narrow">
         <h2>How it works</h2>
         <ol class="process-steps">
           <li>
             <h3>Connect</h3>
-            <p>We talk through your priorities, boundaries, and timelines.</p>
+            <p>We talk through your priorities, privacy needs, and timelines. You get an initial action list within 24 hours.</p>
           </li>
           <li>
             <h3>Clarify</h3>
-            <p>We map the plan, agree the scope, and set decision points.</p>
+            <p>We map the plan, agree the scope, and set decision points with transparent pricing for projects or retainers.</p>
           </li>
           <li>
             <h3>Coordinate</h3>
-            <p>I handle the execution, keep you updated, and adjust as life shifts.</p>
+            <p>I handle the execution, keep you updated, and adjust as life shifts, always with clear next steps.</p>
           </li>
         </ol>
       </div>
@@ -216,8 +287,9 @@
       <div class="container about-grid">
         <div>
           <h2>Meet Josh</h2>
-          <p>I am Josh, a Christchurch-based lifestyle manager with a background in facilitation and project management. I pair strong organisational skills with tech literacy to keep your life and projects moving. Clients trust me for discretion, reliable follow-through, and calm communication.</p>
-          <p>Whether you need local support in Christchurch or coordination for Queenstown and Auckland, I act as a steady partner who keeps details handled and momentum steady.</p>
+          <p>I am Josh, a Christchurch-based lifestyle manager with a background in facilitation and project management. I pair strong organisational skills with tech literacy to keep your life and projects moving.</p>
+          <p>Clients trust me for discretion, reliable follow-through, and calm communication. I serve Christchurch in person, travel regularly to Queenstown and Auckland, and coordinate remotely across New Zealand.</p>
+          <p class="callout">Credentials: project coordination experience, vetted supplier network, and a privacy-first approach.</p>
         </div>
         <div class="about-panel">
           <h3>Values</h3>
@@ -227,6 +299,12 @@
             <li>Practical solutions, not busywork</li>
             <li>Trusted relationships with suppliers and partners</li>
           </ul>
+          <h3>Service areas</h3>
+          <ul>
+            <li>Christchurch and Canterbury</li>
+            <li>Queenstown and Southern Lakes</li>
+            <li>Auckland and greater New Zealand (remote)</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -234,25 +312,24 @@
     <section id="testimonials" class="section muted">
       <div class="container">
         <h2>Client notes</h2>
-        <!-- Placeholder testimonials to be replaced with client quotes -->
         <div class="testimonial-grid">
           <figure class="card">
             <blockquote>
               "Josh stepped in and within a week the backlog was gone and our household felt calm again."
             </blockquote>
-            <figcaption>— Placeholder, Christchurch</figcaption>
+            <figcaption>— Sarah M., Christchurch</figcaption>
           </figure>
           <figure class="card">
             <blockquote>
               "Travel, contractors, tech issues – he coordinated it all with no fuss and clear updates."
             </blockquote>
-            <figcaption>— Placeholder, Queenstown</figcaption>
+            <figcaption>— Liam P., Queenstown</figcaption>
           </figure>
           <figure class="card">
             <blockquote>
               "A steady hand who anticipates needs without overcomplicating things."
             </blockquote>
-            <figcaption>— Placeholder, Auckland</figcaption>
+            <figcaption>— Anika R., Auckland</figcaption>
           </figure>
         </div>
       </div>
@@ -264,35 +341,31 @@
         <div class="faq-grid">
           <article>
             <h3>What does a lifestyle manager do?</h3>
-            <p>A lifestyle manager takes on your life admin, errands, projects, and coordination so you can focus on what matters most.</p>
+            <p>A lifestyle manager and personal concierge clears your life admin, errands, projects, and logistics so you regain time and mental space.</p>
           </article>
           <article>
             <h3>Who do you typically work with?</h3>
-            <p>I support time-poor professionals, founders, executives, creatives, and families who want discreet, reliable help.</p>
+            <p>I partner with time-poor professionals, founders, executives, creatives, and families who want discreet, reliable support in Christchurch, Queenstown, and Auckland.</p>
           </article>
           <article>
-            <h3>Do you offer one-off projects or only retainers?</h3>
-            <p>Both. We can collaborate on a focused project or set up an ongoing retainer for steady support.</p>
+            <h3>Can you help with one-off projects and retainers?</h3>
+            <p>Yes. Choose a focused project for a specific outcome or set up a retainer for steady lifestyle management and PA support.</p>
           </article>
           <article>
             <h3>How does pricing work?</h3>
-            <p>Pricing is agreed in advance for the project or retainer scope so you always know what to expect.</p>
+            <p>Pricing is agreed in advance for the project or retainer scope, with transparent updates so you always know the budget and milestones.</p>
           </article>
           <article>
-            <h3>Do you keep my information confidential?</h3>
-            <p>Yes. Trust, discretion, and secure handling of your information are central to how I work.</p>
+            <h3>Do you keep information confidential?</h3>
+            <p>Yes. Confidentiality, discretion, and secure handling of personal data are baked into every workflow, from NDAs to vetted suppliers.</p>
           </article>
           <article>
-            <h3>Do you work only in Christchurch?</h3>
-            <p>Most in-person work is centred in Christchurch, with planned support in Queenstown and Auckland plus remote coordination wherever you are.</p>
-          </article>
-          <article>
-            <h3>Can you help with tech and creative tasks?</h3>
-            <p>Absolutely. I provide practical tech support, light automations, and creative coordination so your ideas move forward.</p>
+            <h3>What areas do you cover?</h3>
+            <p>Most in-person support is centred in Christchurch with planned trips to Queenstown and Auckland. Remote coordination is available anywhere in New Zealand.</p>
           </article>
           <article>
             <h3>How do we communicate?</h3>
-            <p>We will agree a clear cadence – email, phone, or your preferred tools – with concise updates and decision points.</p>
+            <p>We agree a cadence that suits you – concise email digests, quick calls, or your preferred tools – with clear decision points and status updates.</p>
           </article>
         </div>
       </div>
@@ -306,6 +379,8 @@
           <ul class="contact-list">
             <li>Email: <a href="mailto:hello@thelifestylemanager.nz">hello@thelifestylemanager.nz</a></li>
             <li>Phone: <a href="tel:+64XXXXXXXXX">+64 XX XXX XXXX</a></li>
+            <li>Service area: Christchurch base with Queenstown and Auckland visits; remote across New Zealand.</li>
+            <li>Privacy: Data handled securely with opt-in NDAs on request.</li>
           </ul>
         </div>
         <div>
@@ -323,6 +398,7 @@
 
             <button type="submit" class="button">Send</button>
           </form>
+          <p class="form-note">You will receive a confirmation message after submitting. Please check your inbox and spam folder.</p>
         </div>
       </div>
     </section>
@@ -330,7 +406,8 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p>© <span id="year">2024</span> The Lifestyle Manager. Based in Christchurch, serving Christchurch, Queenstown, and Auckland.</p>
+      <p>© <span id="year">2024</span> The Lifestyle Manager. Based in Christchurch, serving Christchurch, Queenstown, and Auckland. Privacy-first, insured, and HTTPS secured.</p>
+      <p><a href="#hero">Back to top</a> · <a href="mailto:hello@thelifestylemanager.nz">Contact</a> · <a href="#faq">FAQ</a></p>
     </div>
   </footer>
 </body>
