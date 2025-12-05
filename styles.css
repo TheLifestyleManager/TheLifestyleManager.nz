@@ -151,6 +151,34 @@ ol {
   border-bottom: 1px solid var(--border);
 }
 
+.announcement-banner {
+  background: var(--soft);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.announcement-banner .container {
+  width: min(1120px, 92vw);
+  margin: 0 auto;
+  padding: 14px 0;
+  text-align: center;
+}
+
+.announcement-banner p {
+  margin: 0;
+}
+
+.announcement-banner a {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+@media (min-width: 720px) {
+  .announcement-banner .container {
+    text-align: left;
+  }
+}
+
 .header-inner {
   width: min(1180px, 94vw);
   margin: 0 auto;
