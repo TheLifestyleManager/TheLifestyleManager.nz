@@ -129,12 +129,12 @@
   }
   </script>
 </head>
-<body>
-  <a class="skip-link" href="#hero">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a href="index.html" class="site-logo">The Lifestyle Manager</a>
-      <button
+  <body>
+    <a class="skip-link" href="#hero">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="index.html" class="site-logo">The Lifestyle Manager</a>
+        <button
         class="nav-toggle"
         type="button"
         aria-label="Toggle navigation"
@@ -146,11 +146,12 @@
         <span></span>
       </button>
       <nav class="site-nav" id="primary-navigation">
-        <a href="index.html">Home</a>
-        <a href="index.html#about">About</a>
-        <a href="services.html">Services</a>
-        <a href="index.html#faq">FAQ</a>
-        <a href="index.html#contact">Contact</a>
+        <a href="#services">Services</a>
+        <a href="#process">How it works</a>
+        <a href="#about">About</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#faq">FAQ</a>
+        <a class="nav-cta" href="#contact">Enquire</a>
       </nav>
     </div>
   </header>
@@ -166,8 +167,8 @@
 
   <main>
     <section id="hero" class="hero">
-      <div class="hero-inner">
-        <div class="hero-copy">
+      <div class="container hero-grid">
+        <div class="hero-copy" data-animate>
           <p class="hero-eyebrow">
             Based in Christchurch. Serving clients across Aotearoa and online worldwide.
           </p>
@@ -183,6 +184,13 @@
             From technology and travel to projects and personal admin, I take on the details you don&#39;t have
             bandwidth for — so you can move through life with more ease and intention.
           </p>
+
+          <div class="hero-tags" aria-label="Core areas of support">
+            <span class="pill">Life admin</span>
+            <span class="pill">Tech support</span>
+            <span class="pill">Travel &amp; logistics</span>
+            <span class="pill">Home organisation</span>
+          </div>
 
           <p class="hero-support-label">Who I support:</p>
           <ul class="hero-highlights">
@@ -201,27 +209,33 @@
             <a href="#services" class="button secondary">Explore services</a>
           </div>
         </div>
+
+        <div class="hero-card" data-animate>
+          <div class="hero-card-top">
+            <div class="hero-headshot">
+              <img
+                src="assets/images/1764908461138~2.jpg"
+                alt="Portrait of Josh, lifestyle manager based in Christchurch"
+              />
+            </div>
+            <div>
+              <p class="hero-panel-kicker">Concierge calm, on call</p>
+              <h3 id="weekly-support-heading">What I can take off your plate this week</h3>
+            </div>
+          </div>
+          <ul>
+            <li><span class="dot"></span>Plan travel with clear itineraries and bookings</li>
+            <li><span class="dot"></span>Set up tech, accounts, and online safety for the household</li>
+            <li><span class="dot"></span>Coordinate trades, deliveries, and life admin</li>
+            <li><span class="dot"></span>Create systems so your calendar, inbox, and to-dos stay light</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-      <section class="section hero-panel-section" aria-labelledby="weekly-support-heading">
-        <div class="container">
-          <div class="hero-panel">
-            <p class="hero-panel-kicker">Concierge calm, on call</p>
-            <h3 id="weekly-support-heading">What I can take off your plate this week</h3>
-            <ul>
-              <li><span class="dot"></span>Plan travel with clear itineraries and bookings</li>
-              <li><span class="dot"></span>Set up tech, accounts, and online safety for the household</li>
-              <li><span class="dot"></span>Coordinate trades, deliveries, and life admin</li>
-              <li><span class="dot"></span>Create systems so your calendar, inbox, and to-dos stay light</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
       <section id="services" class="services">
         <div class="services-inner">
-            <div class="section-heading">
+            <div class="section-heading" data-animate>
               <span class="eyebrow">Services</span>
               <h2>What I can help with</h2>
               <p class="services-intro">
@@ -231,54 +245,62 @@
               </p>
             </div>
 
-            <div class="service-columns">
-            <div class="service-column">
-              <h3>Life logistics &amp; admin</h3>
-              <ul class="gold-bullets">
-                <li>Clearing inbox, bills, subscriptions and general admin</li>
-                <li>Researching and comparing products, quotes, services</li>
-                <li>Coordinating repairs, trades, deliveries and appointments</li>
-                <li>Helping you get back in control when things feel scattered</li>
-              </ul>
+            <div class="service-grid">
+              <article class="service-card" data-animate>
+                <span class="service-label">Logistics &amp; admin</span>
+                <h3>Life logistics &amp; admin</h3>
+                <p class="service-summary">Steady support to keep your life organised and moving without you chasing tasks.</p>
+                <ul>
+                  <li><span class="dot"></span>Clearing inbox, bills, subscriptions and general admin</li>
+                  <li><span class="dot"></span>Researching and comparing products, quotes, services</li>
+                  <li><span class="dot"></span>Coordinating repairs, trades, deliveries and appointments</li>
+                  <li><span class="dot"></span>Helping you get back in control when things feel scattered</li>
+                </ul>
+              </article>
+
+              <article class="service-card" data-animate>
+                <span class="service-label">Tech &amp; digital</span>
+                <h3>Tech &amp; digital support</h3>
+                <p class="service-summary">Hands-on help to make your devices, accounts, and online world feel simple and safe.</p>
+                <ul>
+                  <li><span class="dot"></span>Choosing and setting up phones, laptops, devices and home tech</li>
+                  <li><span class="dot"></span>Fixing slow systems, syncing accounts, and cleaning up digital clutter</li>
+                  <li><span class="dot"></span>Sorting internet plans, routers, upgrades and connectivity</li>
+                  <li><span class="dot"></span>Support with AI tools, apps, automations, and everyday digital workflows</li>
+                </ul>
+              </article>
+
+              <article class="service-card" data-animate>
+                <span class="service-label">Projects &amp; travel</span>
+                <h3>Travel, projects &amp; personal support</h3>
+                <p class="service-summary">A trusted partner to plan trips, move projects forward, and guide decisions.</p>
+                <ul>
+                  <li><span class="dot"></span>Planning and booking trips, retreats, breaks and work travel</li>
+                  <li><span class="dot"></span>Helping design, start or complete personal or business projects</li>
+                  <li><span class="dot"></span>Walking you through decisions, options and next steps when you feel stuck</li>
+                  <li><span class="dot"></span>Practical support for anyone overwhelmed by modern systems, structure, or tech</li>
+                </ul>
+              </article>
+
+              <article class="service-card" data-animate>
+                <span class="service-label">Execution</span>
+                <h3>Creative &amp; material-world execution</h3>
+                <p class="service-summary">Bringing ideas into form with resourceful sourcing and organised setup.</p>
+                <ul>
+                  <li><span class="dot"></span>Helping bring creative ideas into form — from simple concepts to full builds</li>
+                  <li><span class="dot"></span>Sourcing or procuring hard-to-find items, tools or resources</li>
+                  <li><span class="dot"></span>Setting up home systems, off-grid gear, or regenerative living projects</li>
+                  <li><span class="dot"></span>Support for early-stage ventures, community ideas and “I just need someone to help me make this real” moments</li>
+                </ul>
+              </article>
             </div>
 
-            <div class="service-column">
-              <h3>Tech &amp; digital support</h3>
-              <ul class="gold-bullets">
-                <li>Choosing and setting up phones, laptops, devices and home tech</li>
-                <li>Fixing slow systems, syncing accounts, and cleaning up digital clutter</li>
-                <li>Sorting internet plans, routers, upgrades and connectivity</li>
-                <li>Support with AI tools, apps, automations, and everyday digital workflows</li>
-              </ul>
-            </div>
-
-            <div class="service-column">
-              <h3>Travel, projects &amp; personal support</h3>
-              <ul class="gold-bullets">
-                <li>Planning and booking trips, retreats, breaks and work travel</li>
-                <li>Helping design, start or complete personal or business projects</li>
-                <li>Walking you through decisions, options and next steps when you feel stuck</li>
-                <li>Practical support for anyone overwhelmed by modern systems, structure, or tech</li>
-              </ul>
-            </div>
-
-            <div class="service-column">
-              <h3>Creative &amp; material-world execution</h3>
-              <ul class="gold-bullets">
-                <li>Helping bring creative ideas into form — from simple concepts to full builds</li>
-                <li>Sourcing or procuring hard-to-find items, tools or resources</li>
-                <li>Setting up home systems, off-grid gear, or regenerative living projects</li>
-                <li>Support for early-stage ventures, community ideas and “I just need someone to help me make this real” moments</li>
-              </ul>
-            </div>
-          </div>
-
-          <p class="services-footer">
+          <p class="services-footer" data-animate>
             Every client is different — some want a one-off reset, others want ongoing support to keep life organised, clear and
             moving.
           </p>
 
-        <div class="services-actions">
+        <div class="services-actions" data-animate>
           <a href="services.html" class="button secondary">View full services &amp; packages</a>
           <a
             href="mailto:joshebroadhurst@gmail.com?subject=Free%2020-minute%20call%20-%20The%20Lifestyle%20Manager&body=Kia%20ora%20Josh%2C%0D%0A%0D%0AI'd%20like%20to%20book%20a%20free%2020-minute%20call.%0D%0A%0D%0APreferred%20call%20type%20(phone%20or%20video)%3A%0D%0APossible%20times%20and%20days%3A%0D%0ABrief%20overview%20of%20what%20I'd%20like%20support%20with%3A%0D%0A%0D%0AThank%20you%2C%0D%0A"
@@ -292,25 +314,25 @@
 
     <section id="benefits" class="section muted">
       <div class="container">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <span class="eyebrow">Why it works</span>
             <h2>Why choose to work with me?</h2>
           <p>Responsive, calm, tech-forward support built around your world.</p>
         </div>
         <div class="benefit-grid">
-          <article class="card">
+          <article class="card" data-animate>
             <h3>Local, responsive support</h3>
             <p>I&#39;m based in Christchurch with regular time in Queenstown and Auckland, so you get both in-person help and remote coverage.</p>
           </article>
-          <article class="card">
+          <article class="card" data-animate>
             <h3>Calm, confidential delivery</h3>
             <p>I use discretion, NDAs when needed, and vetted suppliers to keep your information safe and your household protected.</p>
           </article>
-          <article class="card">
+          <article class="card" data-animate>
             <h3>Outcome-first planning</h3>
             <p>We agree decision points, budgets, and updates upfront so you always know what is happening and what is next.</p>
           </article>
-          <article class="card">
+          <article class="card" data-animate>
             <h3>Tech-enabled efficiency</h3>
             <p>My tools for reminders, automations, and shared dashboards reduce back-and-forth and shorten lead times.</p>
           </article>
@@ -321,21 +343,21 @@
 
     <section id="process" class="section">
       <div class="container narrow">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <span class="eyebrow">Partnership</span>
           <h2>How it works</h2>
           <p>Three simple moves to get relief fast, then keep life moving.</p>
         </div>
         <ol class="process-steps">
-          <li>
+          <li data-animate>
             <h3>Connect</h3>
             <p>We talk through your priorities, privacy needs, and timelines. You get an initial action list within 24 hours.</p>
           </li>
-          <li>
+          <li data-animate>
             <h3>Clarify</h3>
             <p>We map the plan, agree the scope, and set decision points with transparent pricing for projects or retainers.</p>
           </li>
-          <li>
+          <li data-animate>
             <h3>Coordinate</h3>
             <p>I handle the execution, keep you updated, and adjust as life shifts, always with clear next steps.</p>
           </li>
@@ -346,7 +368,7 @@
     <section id="about" class="about">
       <div class="about-inner">
         <div class="about-layout">
-          <div class="about-content">
+          <div class="about-content" data-animate>
             <div class="section-heading">
               <span class="eyebrow">Meet your lifestyle manager</span>
               <h2>About Me</h2>
@@ -395,11 +417,22 @@
             <a href="#services" class="button secondary">See what I can help with</a>
           </div>
 
-          <div class="about-photo">
-            <img
-              src="assets/images/1764908461138~2.jpg"
-              alt="Portrait of Josh, lifestyle manager based in Christchurch"
-            />
+          <div class="about-highlight" data-animate>
+            <div class="eyebrow">Snapshot</div>
+            <div class="about-highlight-grid">
+              <div>
+                <h3>How I work</h3>
+                <p>I work with a calm, grounded presence and a fast, intuitive way of getting things done.</p>
+              </div>
+              <div>
+                <h3>Who I support</h3>
+                <p>High performers, business owners, elders, parents, and households with a lot of moving parts.</p>
+              </div>
+              <div>
+                <h3>Where we start</h3>
+                <p>Begin with a free 20-minute call or a one-off job to see how it feels to work together.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -407,7 +440,7 @@
 
     <section id="faq" class="faq">
       <div class="faq-inner">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <span class="eyebrow">FAQs</span>
           <h2>Frequently asked questions</h2>
 
@@ -418,7 +451,7 @@
         </div>
 
         <div class="faq-list">
-          <details class="faq-item">
+          <details class="faq-item" data-animate>
             <summary>Who do I work best with?</summary>
             <div class="faq-answer">
               <p>
@@ -433,7 +466,7 @@
             </div>
           </details>
 
-          <details class="faq-item">
+          <details class="faq-item" data-animate>
             <summary>Do you work in-person, online, or both?</summary>
             <div class="faq-answer">
               <p>
@@ -447,7 +480,7 @@
             </div>
           </details>
 
-          <details class="faq-item">
+          <details class="faq-item" data-animate>
             <summary>What are your hours and availability?</summary>
             <div class="faq-answer">
               <p>
@@ -462,7 +495,7 @@
             </div>
           </details>
 
-          <details class="faq-item">
+          <details class="faq-item" data-animate>
             <summary>What won't you do?</summary>
             <div class="faq-answer">
               <p>
@@ -476,7 +509,7 @@
             </div>
           </details>
 
-          <details class="faq-item">
+          <details class="faq-item" data-animate>
             <summary>How does pricing work?</summary>
             <div class="faq-answer">
               <p>
@@ -491,7 +524,7 @@
             </div>
           </details>
 
-          <details class="faq-item">
+          <details class="faq-item" data-animate>
             <summary>How do we get started?</summary>
             <div class="faq-answer">
               <p>
@@ -517,68 +550,75 @@
 
     <section id="contact" class="contact">
       <div class="contact-inner">
-        <h2>Work with me</h2>
+        <div class="section-heading" data-animate>
+          <span class="eyebrow">Work together</span>
+          <h2>Work with me</h2>
 
-        <p class="contact-intro">
-          If you&#39;re feeling the pull to simplify your life, we can start small and clear:
-          a short conversation, or a one-off job to see how it feels to work together.
-        </p>
+          <p class="contact-intro">
+            If you&#39;re feeling the pull to simplify your life, we can start small and clear:
+            a short conversation, or a one-off job to see how it feels to work together.
+          </p>
+        </div>
 
         <div class="contact-layout">
-          <div class="contact-option">
-            <h3>Not sure yet? Let&#39;s talk.</h3>
-            <p>
-              A <strong>short call or video chat</strong> is often the easiest way to sense whether this is the right
-              fit. We&#39;ll look at where life feels heavy, what you&#39;d love support with, and what working together could
-              look like.
-            </p>
-            <p><strong>You might reflect on:</strong></p>
-            <ul>
-              <li>What feels most overwhelming or energy-draining right now?</li>
-              <li>What would you love to hand over to someone you trust?</li>
-              <li>If life felt 30% lighter, what would change first?</li>
-            </ul>
-            <p>
-              When you&#39;re ready, use the button below and let me know whether you prefer
-              a phone call or video call, plus a few times that work for you.
-            </p>
-            <a
-              href="mailto:joshebroadhurst@gmail.com?subject=Free%2020-minute%20call%20-%20The%20Lifestyle%20Manager&body=Kia%20ora%20Josh%2C%0D%0A%0D%0AI'd%20like%20to%20book%20a%20free%2020-minute%20call.%0D%0A%0D%0APreferred%20call%20type%20(phone%20or%20video)%3A%0D%0APossible%20times%20and%20days%3A%0D%0ABrief%20overview%20of%20what%20I'd%20like%20support%20with%3A%0D%0A%0D%0AThank%20you%2C%0D%0A"
-              class="button primary"
-            >
-              Request a free 20-minute call
-            </a>
-            <p class="contact-note">
-              Prefer phone? You can also call or text me on <strong>021 135 2015</strong>.
-            </p>
+          <div class="contact-option" data-animate>
+            <div class="contact-card">
+              <h3>Not sure yet? Let&#39;s talk.</h3>
+              <p>
+                A <strong>short call or video chat</strong> is often the easiest way to sense whether this is the right
+                fit. We&#39;ll look at where life feels heavy, what you&#39;d love support with, and what working together could
+                look like.
+              </p>
+              <p><strong>You might reflect on:</strong></p>
+              <ul>
+                <li>What feels most overwhelming or energy-draining right now?</li>
+                <li>What would you love to hand over to someone you trust?</li>
+                <li>If life felt 30% lighter, what would change first?</li>
+              </ul>
+              <p>
+                When you&#39;re ready, use the button below and let me know whether you prefer
+                a phone call or video call, plus a few times that work for you.
+              </p>
+              <a
+                href="mailto:joshebroadhurst@gmail.com?subject=Free%2020-minute%20call%20-%20The%20Lifestyle%20Manager&body=Kia%20ora%20Josh%2C%0D%0A%0D%0AI'd%20like%20to%20book%20a%20free%2020-minute%20call.%0D%0A%0D%0APreferred%20call%20type%20(phone%20or%20video)%3A%0D%0APossible%20times%20and%20days%3A%0D%0ABrief%20overview%20of%20what%20I'd%20like%20support%20with%3A%0D%0A%0D%0AThank%20you%2C%0D%0A"
+                class="button primary"
+              >
+                Request a free 20-minute call
+              </a>
+              <p class="contact-note">
+                Prefer phone? You can also call or text me on <strong>021 135 2015</strong>.
+              </p>
+            </div>
           </div>
 
-          <div class="contact-option">
-            <h3>Already know what you need?</h3>
-            <p>
-              If you have a clear <strong>one-off job</strong> — whether it’s sorting out a piece of tech, planning
-              travel, researching a purchase, coordinating something at home, or dealing with a task you’ve been
-              avoiding — you can email me the details directly.
-            </p>
-            <p><strong>It helps if you include:</strong></p>
-            <ul>
-              <li>What you want done</li>
-              <li>Any constraints (budget, timing, preferences)</li>
-              <li>Where you&#39;re currently stuck or overwhelmed</li>
-            </ul>
-            <p>
-              I&#39;ll reply with a <strong>clear next step</strong>, an estimated timeframe, and a one-off fee for the job.
-            </p>
-            <a
-              href="mailto:joshebroadhurst@gmail.com?subject=One-off%20job%20request%20-%20The%20Lifestyle%20Manager&body=Kia%20ora%20Josh%2C%0D%0A%0D%0AI'd%20like%20to%20request%20a%20one-off%20job.%0D%0A%0D%0AWhat%20I%20need%20help%20with%3A%0D%0AConstraints%20(budget%2C%20timing%2C%20preferences)%3A%0D%0AWhere%20I'm%20currently%20stuck%20or%20overwhelmed%3A%0D%0A%0D%0AThank%20you%2C%0D%0A"
-              class="button secondary"
-            >
-              Email a one-off job
-            </a>
-              <p class="contact-note">
-                One-off work is charged at a simple hourly or fixed rate, depending on the task.
-                We&#39;ll confirm everything together before anything begins.
+          <div class="contact-option" data-animate>
+            <div class="contact-card muted">
+              <h3>Already know what you need?</h3>
+              <p>
+                If you have a clear <strong>one-off job</strong> — whether it’s sorting out a piece of tech, planning
+                travel, researching a purchase, coordinating something at home, or dealing with a task you’ve been
+                avoiding — you can email me the details directly.
               </p>
+              <p><strong>It helps if you include:</strong></p>
+              <ul>
+                <li>What you want done</li>
+                <li>Any constraints (budget, timing, preferences)</li>
+                <li>Where you&#39;re currently stuck or overwhelmed</li>
+              </ul>
+              <p>
+                I&#39;ll reply with a <strong>clear next step</strong>, an estimated timeframe, and a one-off fee for the job.
+              </p>
+              <a
+                href="mailto:joshebroadhurst@gmail.com?subject=One-off%20job%20request%20-%20The%20Lifestyle%20Manager&body=Kia%20ora%20Josh%2C%0D%0A%0D%0AI'd%20like%20to%20request%20a%20one-off%20job.%0D%0A%0D%0AWhat%20I%20need%20help%20with%3A%0D%0AConstraints%20(budget%2C%20timing%2C%20preferences)%3A%0D%0AWhere%20I'm%20currently%20stuck%20or%20overwhelmed%3A%0D%0A%0D%0AThank%20you%2C%0D%0A"
+                class="button secondary"
+              >
+                Email a one-off job
+              </a>
+                <p class="contact-note">
+                  One-off work is charged at a simple hourly or fixed rate, depending on the task.
+                  We&#39;ll confirm everything together before anything begins.
+                </p>
+            </div>
           </div>
         </div>
       </div>
@@ -586,14 +626,14 @@
 
     <section id="testimonials" class="section testimonials">
       <div class="container narrow">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <span class="eyebrow">Testimonials</span>
           <h2>What clients say</h2>
           <p>Recent feedback from people I&#39;ve supported.</p>
         </div>
 
         <div class="testimonial-grid">
-          <article class="testimonial-card">
+          <article class="testimonial-card" data-animate>
             <div class="testimonial-top">
               <div class="testimonial-quote-mark" aria-hidden="true">“</div>
               <div>
@@ -628,7 +668,7 @@
             <button type="button" class="testimonial-toggle" aria-expanded="false">Show more</button>
           </article>
 
-          <article class="testimonial-card">
+          <article class="testimonial-card" data-animate>
             <div class="testimonial-top">
               <div class="testimonial-quote-mark" aria-hidden="true">“</div>
               <div>
@@ -763,6 +803,21 @@
         setState(!expanded);
       });
     });
+
+    const animatedElements = document.querySelectorAll('[data-animate]');
+    const reveal = (entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    };
+
+    const observer = new IntersectionObserver((entries) => entries.forEach(reveal), {
+      threshold: 0.14,
+      rootMargin: '0px 0px -10% 0px',
+    });
+
+    animatedElements.forEach((el) => observer.observe(el));
   </script>
 </body>
 </html>
