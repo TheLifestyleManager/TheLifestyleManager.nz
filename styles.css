@@ -301,6 +301,14 @@ ol {
   gap: 12px;
 }
 
+.hero-title-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -319,7 +327,13 @@ ol {
 .hero h1 {
   color: #f7f6f2;
   font-size: clamp(2.2rem, 3vw + 1rem, 3.4rem);
-  margin-bottom: 12px;
+  margin: 0;
+}
+
+.hero-headshot-inline {
+  width: 82px;
+  height: 82px;
+  margin-top: 4px;
 }
 
 .hero-subtitle {
