@@ -245,13 +245,6 @@ ol {
   background: rgba(12, 26, 48, 0.07);
 }
 
-.nav-cta {
-  background: var(--ink);
-  color: #f7f6f2;
-  border: 1px solid var(--ink);
-  padding-inline: 14px;
-}
-
 .nav-toggle {
   display: none;
   align-items: center;
