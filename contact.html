@@ -94,54 +94,57 @@
     <section class="section contact-page">
       <div class="section-inner contact-page-grid">
         <div class="contact-card" data-animate>
-          <span class="eyebrow">Blue &amp; gold support</span>
-          <h2>Simple ways to reach me</h2>
+          <h2>Contact</h2>
           <p>
-            Every conversation starts with understanding what feels heavy for you right now.
-            Give me a few details and I’ll respond with a clear path forward.
+            You can reach me directly via email. Share what you’re dreaming of, any timelines, and whether you prefer a call
+            or email follow-up.
           </p>
-          <ul class="gold-bullets">
-            <li>Outline your goals, challenges, or the tasks you want off your plate</li>
-            <li>Mention your preferred contact method so I can reach you promptly</li>
-            <li>Include any deadlines or constraints you want me to consider</li>
-          </ul>
           <div class="contact-actions">
             <a class="button primary" href="mailto:joshebroadhurst@gmail.com?subject=Contact%20request%20-%20The%20Lifestyle%20Manager">
               Email me directly
             </a>
             <a class="button secondary" href="tel:+64211352015">Call +64 21 135 2015</a>
           </div>
-          <p class="contact-note">Prefer the form? I’ll read your answers carefully and respond with next steps.</p>
+          <div class="contact-meta">
+            <p><strong>Email:</strong> <a href="mailto:joshebroadhurst@gmail.com">joshebroadhurst@gmail.com</a></p>
+            <p><strong>Location:</strong> Ōtautahi / Christchurch, Aotearoa New Zealand</p>
+            <p>
+              Share what you’d like support with and any key dates. I’ll read your note carefully and respond with next steps.
+            </p>
+          </div>
         </div>
 
         <form class="contact-card contact-form" id="contact-form" data-animate>
           <h3>Send your details</h3>
           <div class="form-field">
-            <label for="contact-name">Full name</label>
-            <input id="contact-name" name="name" type="text" required autocomplete="name" />
+            <label for="contact-name">Name</label>
+            <input id="contact-name" name="name" type="text" placeholder="Your name" required autocomplete="name" />
           </div>
           <div class="form-field">
-            <label for="contact-method">Best contact details</label>
+            <label for="contact-method">Email</label>
             <input
               id="contact-method"
               name="contact"
-              type="text"
+              type="email"
               required
-              placeholder="Phone number or email"
-              autocomplete="tel"
+              placeholder="you@example.com"
+              autocomplete="email"
             />
           </div>
           <div class="form-field">
-            <label for="contact-message">What would you like help with?</label>
-            <textarea id="contact-message" name="message" rows="5" required></textarea>
+            <label for="contact-message">What would you like support with?</label>
+            <textarea
+              id="contact-message"
+              name="message"
+              rows="5"
+              placeholder="A few lines about your project, timing, and what you’re hoping for."
+              required
+            ></textarea>
           </div>
           <div class="contact-actions">
-            <button type="submit" class="button primary">Send</button>
+            <button type="submit" class="button primary">Send enquiry</button>
             <a class="button secondary" href="tel:+64211352015">Call now</a>
           </div>
-          <p class="form-note">
-            The Send button opens your default mail app and pre-fills an email to joshebroadhurst@gmail.com with your answers.
-          </p>
         </form>
       </div>
     </section>
