@@ -179,7 +179,8 @@ for (const w of SWAPS) {
   const b = buildBrief({ groups: ['personal'], skills: ['pattern-spotter', 'food-diary', 'workout-log'], name: 'X', email: 'x@y.z' });
   const j = b.jobs.find(x => x.id === 'pattern-spotter');
   ok(j && [...j.reads].sort().join() === 'food-diary,workout-log', 'pattern spotter reads picked logs only');
-  ok(briefText(b).includes('does not diagnose'), 'pattern spotter rule in the brief');
+  ok(briefText(b).includes('Never diagnose') && briefText(b).includes('call 111'), 'pattern spotter rule and red flags in the brief');
+  for (const id of ['symptoms', 'migraine']) ok(applySwaps({ groups: ['personal'], swaps: [id] }).includes('pattern-spotter'), `swap ${id} ticks the pattern spotter`);
   ok(buildBrief({ groups: ['personal'], skills: ['pattern-spotter'], name: 'X', email: 'x@y.z' }).jobs[0].reads.length === 0, 'reads nothing when alone');
 }
 

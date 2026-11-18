@@ -482,7 +482,7 @@ export const SKILLS = [
     icon: '🔍', groups: ['personal'], tools: ['none'],
     outward: false, heavy: false, category: 'Health', channel: 'patterns', popular: false,
     reads: ['food-diary', 'meds-reminders', 'workout-log', 'journal', 'habit-check', 'cycle-tracker'],
-    rule: 'Keep every health log in one shared place so it can compare them, plus local weather and air pressure. Suggest one small tweak at a time. It spots patterns, it does not diagnose: point to a GP for anything worrying.',
+    rule: 'Keep every health log in one shared place, one row per day, plus local air pressure. Compare each factor with the same day, the next day and the day after. Wait for 30 days, and at least 10 days with a factor and 15 without, before naming a link; until then say it needs more data. Say it as a pattern in their logs, never a cause, and give the days of data and how many checks it ran. Suggest one small tweak at a time as a test, and re-check last month findings on new days. Never diagnose or change medicines; offer a summary for their GP. Red flags stop the analysis: a sudden worst-ever headache, fever with a stiff neck, or new weakness, numbness, speech or vision trouble means call 111 now; a new or changed pattern, first headaches after 65, or very frequent painkillers means see a GP soon.',
     ask: [
       { id: 'track', label: 'What do you want to get to the bottom of?', type: 'chips', multiple: true, options: ['Headaches', 'Low energy', 'Sleep', 'Mood', 'Gut', 'Skin'] },
       { id: 'checkin', label: 'How often should it ask how you feel?', type: 'chips', options: ['Once a day', 'Morning and night', 'Only when I tell it'] },
@@ -560,6 +560,9 @@ export const SWAPS = [
   { id: 'workouts', title: 'Workout log', icon: '💪', examples: 'Hevy', nzd: 45, skills: ['workout-log'], fit: 'part', note: 'no GPS for runs and no watch sync.' },
   { id: 'journal', title: 'Journal app', icon: '📓', examples: 'Day One', nzd: 90, skills: ['journal'], fit: 'full' },
   { id: 'meds', title: 'Medication reminders', icon: '💊', examples: 'Medisafe', nzd: 75, skills: ['meds-reminders'], fit: 'part', note: 'it cannot see if a dose was taken, and has no pharmacy link.' },
+  // Prices checked 19 Nov 2026 (research/health/audit-1.md): Bearable US$34.99, Migraine Buddy US$89.99 a year, at 1.82.
+  { id: 'symptoms', title: 'Symptom tracker', icon: '🔍', examples: 'Bearable', nzd: 65, skills: ['pattern-spotter'], fit: 'full' },
+  { id: 'migraine', title: 'Migraine diary', icon: '🤕', examples: 'Migraine Buddy', nzd: 165, skills: ['pattern-spotter'], fit: 'part', note: 'no phone sensors, so you tell it how you slept.' },
   { id: 'food', title: 'Calorie counter', icon: '🍎', examples: 'MyFitnessPal', nzd: 135, skills: ['food-diary'], fit: 'part', note: 'no barcode scanner, and counts from photos are estimates.' },
   { id: 'budget', title: 'Budget app', icon: '💰', examples: 'YNAB or PocketSmith', nzd: 200, skills: ['budget-helper'], fit: 'part', note: 'no live bank feeds. You send it a file from your bank, or tell it the numbers.' },
   { id: 'meals', title: 'Meal planner', icon: '🥗', examples: 'Plan to Eat', nzd: 90, skills: ['meal-planner'], fit: 'part', note: 'no cook mode screen or pantry barcode scanning.' },
