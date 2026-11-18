@@ -811,7 +811,13 @@ function scrollReveal() { // intro sections fade up when they come into view
 function introStats() {
   for (const n of document.querySelectorAll('[data-count]')) {
     const k = n.dataset.count;
-    countUp(n, STAT_COUNTS[k] ?? Number(k));
+    if (k === 'inf') { // counts up fast like the others, then gives up and shows infinity
+      countUp(n, 999, String, 900);
+      if (REDUCED.matches) n.textContent = '∞'; else setTimeout(() => { n.textContent = '∞'; }, 950);
+      continue;
+    }
+    const plus = 'plus' in n.dataset ? '+' : ''; // our own catalogue is a floor, not a ceiling
+    countUp(n, STAT_COUNTS[k] ?? Number(k), x => x + plus);
   }
 }
 

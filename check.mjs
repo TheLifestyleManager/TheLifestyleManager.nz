@@ -168,8 +168,8 @@ for (const w of SWAPS) {
   const strings = (js.match(/'[^'\n]*'|`[^`\n]*`/g) || []).filter(x => !x.includes('@'));
   ok(!strings.some(x => DASH.test(x)), 'no dashes in wizard.js text');
   ok(!strings.some(x => /Josh|Farley/.test(x)), 'no founder names in wizard.js text');
-  ok(html.includes(`data-count="skills">${SKILLS.filter(s => !s.soon).length}<`), 'skills count matches');
-  ok(html.includes(`data-count="swaps">${SWAPS.length}<`), 'swaps count matches');
+  ok(html.includes(`data-count="skills" data-plus>${SKILLS.filter(s => !s.soon).length}+<`), 'skills count matches');
+  ok(html.includes(`data-count="swaps" data-plus>${SWAPS.length}+<`), 'swaps count matches');
   const keys = [...js.matchAll(/TRY\['([^']+)'\]/g)].map(m => m[1]);
   ok(keys.length === 4 && keys.every(k => TRY[k]), 'preview lines come from TRY');
   ok(!/Josh|Farley/.test(briefText(buildBrief({ groups: ['home'], name: 'X', email: 'x@y.z' })).split('YOUR PRIVACY')[1] || ''), 'privacy line has no names');

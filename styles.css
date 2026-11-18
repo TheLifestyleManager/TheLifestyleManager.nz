@@ -416,7 +416,7 @@ img {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(4, auto);
   justify-content: start;
   gap: 8px 32px;
   margin: 36px 0 0;
@@ -1579,7 +1579,8 @@ button.card[aria-pressed="true"] .card-badge {
   }
 
   .stats {
-    gap: 8px 20px;
+    grid-template-columns: repeat(2, 1fr); /* 2 by 2 on phones, like inference.nz */
+    gap: 20px 16px;
   }
 
   .stats dt {
@@ -1653,4 +1654,11 @@ button.card[aria-pressed="true"] .card-badge {
     animation-duration: 1.6s !important;
     animation-iteration-count: infinite !important;
   }
+}
+
+/* The infinity sign is a small glyph in the system font; scale it to sit with the numbers */
+[data-count="inf"] {
+  display: inline-block;
+  font-size: 1.45em;
+  line-height: 0.75;
 }

@@ -38,7 +38,7 @@
     /* Theme before first paint: the saved choice, else the system. wizard.js owns the toggle. */
     try { var t = localStorage.getItem('tlm-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <!-- Inference logo mark (from inference.nz/logo.svg), defined once. The I uses currentColor so it works in both themes. -->
@@ -86,9 +86,10 @@
             <button id="start-advanced" class="btn btn-ghost" type="button">I'm technical: advanced setup</button>
           </div>
           <dl class="stats rise">
-            <div><dt><span data-count="skills">51</span></dt><dd>jobs it can do</dd></div>
-            <div><dt><span data-count="swaps">17</span></dt><dd>apps it could replace</dd></div>
+            <div><dt><span data-count="skills" data-plus>51+</span></dt><dd>ready-made skills</dd></div>
+            <div><dt><span data-count="swaps" data-plus>17+</span></dt><dd>paid apps it could replace</dd></div>
             <div><dt><span data-count="5">5</span> min</dt><dd>to set up</dd></div>
+            <div><dt><span data-count="inf" aria-label="No limit">∞</span></dt><dd>new skills you can teach it</dd></div>
           </dl>
         </div>
         <div class="preview rise" id="preview" role="group" aria-label="Examples of what you can say to it"></div>
@@ -155,6 +156,6 @@
     </a>
   </footer>
 
-  <script type="module" src="wizard.js?v=5"></script>
+  <script type="module" src="wizard.js?v=6"></script>
 </body>
 </html>
