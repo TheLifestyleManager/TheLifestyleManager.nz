@@ -47,7 +47,7 @@ const OWN_SKILLS = {
   id: 'own.skills',
   type: 'list',
   label: 'Add your own skill',
-  help: "One idea per box, for example: Organise the kids' photos by age. Each one gets its own channel.",
+  help: "One idea per box, for example: Organise the kids' photos by age. Each one gets its own chat.",
   optional: true,
   collapsed: true,
   addLabel: 'Add another',
@@ -74,7 +74,7 @@ const BASE_STEPS = [
     lead: 'A few basics so we can make this yours.',
     fields: [
       { id: 'name', type: 'text', label: 'Your name' },
-      { id: 'email', type: 'email', label: 'Email', help: 'Only Josh and Farley read your answers. They reach us by email through FormSubmit, which keeps a copy for up to 30 days. Ask any time and we delete them.' },
+      { id: 'email', type: 'email', label: 'Email', help: 'Only our small NZ team reads your answers. They reach us by email through FormSubmit, a simple forwarding service, which keeps a copy for up to 30 days. Ask any time and we will delete them.' },
       { id: 'region', type: 'text', label: 'Town or city', optional: true },
     ],
   },
@@ -83,7 +83,7 @@ const BASE_STEPS = [
     title: 'What would you like help with?',
     lead: 'Pick any that fit. You can change these later.',
     fields: [
-      { id: 'groups', type: 'cards', label: 'Choose one or more', multiple: true, source: 'groups' },
+      { id: 'groups', type: 'cards', label: 'Choose one or more', short: 'Areas', multiple: true, source: 'groups' },
     ],
   },
   {
@@ -130,11 +130,11 @@ const BASE_STEPS = [
   {
     // Advanced mode replaces the branch screens with one free text screen.
     id: 'context',
-    title: 'Your set-up, in your own words',
+    title: 'Your setup, in your own words',
     lead: 'You know your stack, so no forms. The more you tell us, the better the first build.',
     when: (a) => isAdv(a),
     fields: [
-      { id: 'describe', type: 'textarea', label: 'Describe your set-up and what you want, in as much detail as you like' },
+      { id: 'describe', type: 'textarea', label: 'Describe your setup and what you want, in as much detail as you like' },
       { id: 'setname', type: 'text', label: 'Business or project name', optional: true },
     ],
   },
@@ -145,15 +145,15 @@ const BASE_STEPS = [
     lead: 'Pick any you pay for now. It does the main job of each, all in one chat. A few extras, like live bank feeds, stay with the app.',
     when: (a) => swapChoices(a).length > 0,
     fields: [
-      { id: 'swaps', type: 'cards', label: 'Pick any that apply', multiple: true, optional: true, source: 'swaps' },
+      { id: 'swaps', type: 'cards', label: 'Pick any that apply', short: 'Apps you pay for', multiple: true, optional: true, source: 'swaps' },
     ],
   },
   {
     id: 'skills',
     title: 'Pick what it does for you',
-    lead: 'Start with a few. Each one gets its own channel.',
+    lead: 'Start with a few. Each one gets its own chat.',
     fields: [
-      { id: 'skills', type: 'cards', label: 'Choose one or more', multiple: true, source: 'skills', orList: 'own.skills' },
+      { id: 'skills', type: 'cards', label: 'Choose one or more', short: 'Jobs', multiple: true, source: 'skills', orList: 'own.skills' },
     ],
   },
   {
@@ -173,7 +173,7 @@ const BASE_STEPS = [
     title: 'What do you already use?',
     lead: 'Pick the ones you already have. Skip any you do not.',
     fields: [
-      { id: 'tools', type: 'chips', label: 'Tick what applies', multiple: true, optional: true, source: 'tools' },
+      { id: 'tools', type: 'chips', label: 'Tick what applies', short: 'Tools', multiple: true, optional: true, source: 'tools' },
     ],
   },
   {
@@ -183,7 +183,7 @@ const BASE_STEPS = [
     lead: 'All optional. Skip anything you do not care about.',
     when: (a) => isAdv(a),
     fields: [
-      { id: 'model', type: 'chips', noOwn: true, label: 'Which model should it run?', optional: true, options: ['Let Josh pick', 'Nous Portal', 'OpenRouter', 'Anthropic', 'OpenAI', 'My own endpoint'] },
+      { id: 'model', type: 'chips', noOwn: true, label: 'Which model should it run?', optional: true, options: ['Inference, hosted in NZ (recommended)', 'Nous Portal', 'OpenRouter', 'Anthropic', 'OpenAI', 'My own endpoint'] },
       { id: 'extras', type: 'chips', label: 'Anything extra?', multiple: true, optional: true, options: ['Web app (Open WebUI)', 'Voice notes', 'API access', 'SSH access for me', 'Git repo for its skills', 'MCP servers', 'Browser tools', 'Local files sync'] },
       { id: 'integrations', type: 'textarea', label: 'Accounts, APIs or MCP servers it should use', optional: true, help: 'Names only, never paste passwords or keys.' },
       { id: 'jobs', type: 'textarea', label: 'Scheduled jobs you want', optional: true, help: 'What they do and when they run.' },
@@ -219,7 +219,7 @@ const BASE_STEPS = [
   {
     id: 'limits',
     title: 'Anything it must never do?',
-    lead: 'It always asks you before it sends, posts or pays anything.',
+    lead: 'Set the limits now. You can change them later.',
     fields: [
       { id: 'never', type: 'textarea', label: 'Anything it must never do?', optional: true, help: 'One per line works well.' },
     ],

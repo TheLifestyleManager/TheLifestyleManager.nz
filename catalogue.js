@@ -31,7 +31,7 @@ export const TOOLS = [
   { id: 'canva', title: 'Canva', icon: '🎨', kind: 'design' },
   { id: 'website', title: 'A website', icon: '🌐', kind: 'web' },
   { id: 'spotify', title: 'Spotify', icon: '🎧', kind: 'media' },
-  { id: 'bank', title: 'Bank feed or CSV', icon: '🏦', kind: 'money' },
+  { id: 'bank', title: 'Bank statements', icon: '🏦', kind: 'money' },
   { id: 'none', title: 'None of these', icon: '🚫', kind: 'none' },
 ];
 
@@ -49,7 +49,7 @@ export const SKILLS = [
     ],
   },
   {
-    id: 'inbox-triage', title: 'Inbox triage',
+    id: 'inbox-triage', title: 'Inbox tidy-up',
     line: 'Sorts your email and drafts the routine replies.',
     icon: '📥', groups: ['personal', 'business'], tools: ['gmail', 'outlook'],
     outward: false, heavy: false, category: 'Daily', channel: 'inbox-triage', popular: true,
@@ -79,7 +79,7 @@ export const SKILLS = [
     ],
   },
   {
-    id: 'habit-check', title: 'Habit check ins',
+    id: 'habit-check', title: 'Habit check-ins',
     line: 'A friendly daily nudge about your streaks.',
     icon: '🔁', groups: ['personal', 'projects'], tools: ['none'],
     outward: false, heavy: false, category: 'Daily', channel: 'habit-check', popular: false,
@@ -90,7 +90,7 @@ export const SKILLS = [
     ],
   },
   {
-    id: 'group-digest', title: 'Group chat cliff notes',
+    id: 'group-digest', title: 'Group chat summary',
     line: 'Boils your busiest chats down to the lines that matter.',
     icon: '🗞️', groups: ['business', 'personal'], tools: ['whatsapp', 'messenger'],
     outward: false, heavy: false, category: 'Daily', channel: 'group-digest', popular: false,
@@ -128,7 +128,7 @@ export const SKILLS = [
   // ---- Learning and remembering ----
   {
     id: 'learns-from-mistakes', title: 'Learns from mistakes',
-    line: 'It writes down its slip ups and gets better over time.',
+    line: 'It writes down its slip-ups and gets better over time.',
     icon: '🧠', groups: ['personal', 'business'], tools: ['none'],
     outward: false, heavy: false, category: 'Learning', channel: 'learns-from-mistakes', popular: true,
     ask: [],
@@ -416,8 +416,8 @@ export const SKILLS = [
     ],
   },
   {
-    id: 'resume-maker', title: 'Tailored resume maker',
-    line: 'Reshapes your resume to fit each job ad, honestly.',
+    id: 'resume-maker', title: 'Tailored CV maker',
+    line: 'Reshapes your CV to fit each job ad, honestly.',
     icon: '🪪', groups: ['personal', 'projects'], tools: ['sheets', 'gdrive'],
     outward: false, heavy: false, category: 'Projects', channel: 'resume-maker', popular: false,
     ask: [],
@@ -440,6 +440,7 @@ export const SKILLS = [
     outward: false, heavy: false, category: 'Health', channel: 'workouts', popular: false,
     ask: [
       { id: 'kind', label: 'What do you train?', type: 'chips', multiple: true, options: ['Gym', 'Running', 'Home workouts', 'Sport'] },
+      { id: 'nudge', label: 'Nudge you to train?', type: 'chips', options: ['Daily', 'Weekly', 'No nudges'] },
       { id: 'history', label: 'Bring your history across?', type: 'chips', options: ['Yes, I can export it', 'Start fresh'] },
     ],
   },
@@ -454,8 +455,8 @@ export const SKILLS = [
     ],
   },
   {
-    id: 'meds-reminders', title: 'Medication reminders',
-    line: 'Reminds you to take meds and warns when you run low.',
+    id: 'meds-reminders', title: 'Meds and supplements',
+    line: 'Reminders for meds and supplements. Warns when you run low.',
     icon: '💊', groups: ['personal'], tools: ['none'],
     outward: false, heavy: false, category: 'Health', channel: 'meds', popular: false,
     ask: [
@@ -471,6 +472,21 @@ export const SKILLS = [
     ask: [
       { id: 'goal', label: 'What is the goal?', type: 'chips', multiple: true, options: ['Eat better', 'Lose weight', 'Build muscle', 'Spot food triggers'] },
       { id: 'counts', label: 'What should it count?', type: 'chips', options: ['Calories', 'Protein', 'No numbers, just notes'] },
+      { id: 'nag', label: 'Ask what you ate at which meals?', type: 'chips', multiple: true, options: ['Breakfast', 'Lunch', 'Dinner', 'No nags, I will tell it'] },
+    ],
+  },
+  {
+    // Joins up the other health logs. reads: the skills whose logs it compares (only the picked ones reach the brief).
+    id: 'pattern-spotter', title: 'Health pattern spotter',
+    line: 'Joins up your health logs, spots patterns, suggests small tweaks.',
+    icon: '🔍', groups: ['personal'], tools: ['none'],
+    outward: false, heavy: false, category: 'Health', channel: 'patterns', popular: false,
+    reads: ['food-diary', 'meds-reminders', 'workout-log', 'journal', 'habit-check', 'cycle-tracker'],
+    rule: 'Keep every health log in one shared place so it can compare them, plus local weather and air pressure. Suggest one small tweak at a time. It spots patterns, it does not diagnose: point to a GP for anything worrying.',
+    ask: [
+      { id: 'track', label: 'What do you want to get to the bottom of?', type: 'chips', multiple: true, options: ['Headaches', 'Low energy', 'Sleep', 'Mood', 'Gut', 'Skin'] },
+      { id: 'checkin', label: 'How often should it ask how you feel?', type: 'chips', options: ['Once a day', 'Morning and night', 'Only when I tell it'] },
+      { id: 'review', label: 'When should it share what it finds?', type: 'chips', options: ['Every week', 'Every month'] },
     ],
   },
   {
@@ -545,7 +561,7 @@ export const SWAPS = [
   { id: 'journal', title: 'Journal app', icon: '📓', examples: 'Day One', nzd: 90, skills: ['journal'], fit: 'full' },
   { id: 'meds', title: 'Medication reminders', icon: '💊', examples: 'Medisafe', nzd: 75, skills: ['meds-reminders'], fit: 'part', note: 'it cannot see if a dose was taken, and has no pharmacy link.' },
   { id: 'food', title: 'Calorie counter', icon: '🍎', examples: 'MyFitnessPal', nzd: 135, skills: ['food-diary'], fit: 'part', note: 'no barcode scanner, and counts from photos are estimates.' },
-  { id: 'budget', title: 'Budget app', icon: '💰', examples: 'YNAB or PocketSmith', nzd: 200, skills: ['budget-helper'], fit: 'part', note: 'no live bank feeds. You send it a bank CSV or tell it.' },
+  { id: 'budget', title: 'Budget app', icon: '💰', examples: 'YNAB or PocketSmith', nzd: 200, skills: ['budget-helper'], fit: 'part', note: 'no live bank feeds. You send it a file from your bank, or tell it the numbers.' },
   { id: 'meals', title: 'Meal planner', icon: '🥗', examples: 'Plan to Eat', nzd: 90, skills: ['meal-planner'], fit: 'part', note: 'no cook mode screen or pantry barcode scanning.' },
   { id: 'family', title: 'Family organiser', icon: '🏠', examples: 'Cozi or Oona', nzd: 60, skills: ['family-calendar'], fit: 'part', note: 'not a wall calendar everyone looks at, and no location sharing.' },
   { id: 'kids', title: 'Baby and kids journal', icon: '🧸', examples: 'Tinybeans or Huckleberry', nzd: 130, skills: ['kids-memories'], fit: 'part', note: 'no shared feed for grandparents and no printed book.' },
@@ -554,7 +570,7 @@ export const SWAPS = [
   { id: 'notes', title: 'Notes app', icon: '🗂️', examples: 'Notion', nzd: 220, skills: ['second-brain'], fit: 'part', note: 'no shared pages or databases for a team.' },
   { id: 'news', title: 'News reader', icon: '🔎', examples: 'Feedly', nzd: 130, skills: ['research-digest'], fit: 'full' },
   { id: 'transcribe', title: 'Transcription app', icon: '🎙️', examples: 'Otter', nzd: 180, skills: ['voice-notes'], fit: 'part', note: 'it transcribes recordings you send. It does not join your calls.' },
-  { id: 'resume', title: 'Resume builder', icon: '🪪', examples: 'Zety', nzd: 130, skills: ['resume-maker'], fit: 'full' },
+  { id: 'resume', title: 'CV builder', icon: '🪪', examples: 'Zety', nzd: 130, skills: ['resume-maker'], fit: 'full' },
   { id: 'grammar', title: 'Grammar checker', icon: '✍️', examples: 'Grammarly', nzd: 260, skills: ['writing-helper'], fit: 'part', note: 'it checks text you send. It does not sit inside your keyboard or Word.' },
 ];
 
@@ -600,8 +616,9 @@ export const TRY = {
   'video-edits': 'Cut this video to 30 seconds.',
   'overnight-builder': 'While I sleep, build a first draft of this.',
   'code-partner': 'Fix the bug in the sign up form.',
-  'resume-maker': 'Fit my resume to this job ad, as a PDF.',
+  'resume-maker': 'Fit my CV to this job ad, as a PDF.',
   'cycle-tracker': 'My period started today.',
+  'pattern-spotter': 'Headache again, 6 out of 10. Any pattern yet?',
   'workout-log': 'Squats 3 sets of 8 at 60kg.',
   'journal': 'Ask me tonight how the day went.',
   'meds-reminders': 'Remind me to take my pill at 8am.',

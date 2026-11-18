@@ -25,7 +25,7 @@ const TONE_LABELS = {
 };
 
 // Round 4: Hermes only makes files when told to, so every box gets this rule.
-export const FILES_RULE = 'Text by default. For quotes, invoices, reports, and money or customer numbers, send a PDF, chart or spreadsheet, or whenever asked.';
+export const FILES_RULE = 'Text by default. Send a PDF, chart or spreadsheet for quotes, invoices, reports, and money or customer numbers, or whenever they ask.';
 const SAVE_SKILL = 'That worked. Save it as a skill.';
 
 // "Your first week": up to 5 things to try, from the active skills and own
@@ -61,7 +61,7 @@ const TECH_LABELS = {
 };
 // The defaults the tech step states, so an advanced brief is complete.
 const TECH_ADVANCED_DEFAULTS = {
-  model: 'Let Josh pick',
+  model: 'Inference, hosted in NZ (recommended)',
   access: 'Ask me before anything outward',
 };
 
@@ -241,7 +241,10 @@ export function buildBrief(a) {
       const empty = v === undefined || v === '' || (Array.isArray(v) && !v.length);
       if (!empty) settings[q.id] = v;
     }
-    return { id: s.id, title: s.title, outward: !!s.outward, channel: s.channel, settings };
+    const job = { id: s.id, title: s.title, outward: !!s.outward, channel: s.channel, settings };
+    if (s.reads) job.reads = skills.filter(x => s.reads.includes(x.id)).map(x => x.id); // only the logs they picked
+    if (s.rule) job.rule = s.rule;
+    return job;
   });
 
   // Paid apps it could replace, and the typical yearly cost of the picked ones.
@@ -343,6 +346,8 @@ export function briefText(brief) {
     for (const [k, v] of Object.entries(j.settings || {})) {
       push(`    ${k}: ${Array.isArray(v) ? v.join(', ') : v}`);
     }
+    if (j.reads) push(`    reads the logs of: ${j.reads.length ? j.reads.join(', ') : 'none picked yet, it keeps its own'}`);
+    if (j.rule) push(`    rule: ${j.rule}`);
   }
   if (!(b.jobs || []).length) push('- None picked yet.');
   push();
@@ -404,7 +409,7 @@ export function briefText(brief) {
   push();
 
   push('YOUR PRIVACY');
-  push('Only Josh and Farley read your answers. They reach us by email through FormSubmit. Ask any time and we delete them.');
+  push('Only our small NZ team reads your answers. They reach us by email through FormSubmit. Ask any time and we will delete them.');
   push();
 
   const body = lines.join('\n');

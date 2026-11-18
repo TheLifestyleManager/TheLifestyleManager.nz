@@ -158,4 +158,29 @@ for (const w of SWAPS) {
   ok(buildBrief({ groups: ['business'], swaps: ['cycle'], name: 'X', email: 'x@y.z' }).replaces.length === 0, 'hidden swaps stay out');
 }
 
+{ // round 5: the Inference look. Visitor text has no dashes and no founder names; numbers and preview lines are real.
+  const { readFileSync } = await import('node:fs');
+  const html = readFileSync(new URL('./index.html', import.meta.url), 'utf8');
+  const js = readFileSync(new URL('./wizard.js', import.meta.url), 'utf8');
+  const shown = html.replace(/<script[\s\S]*?<\/script>|<!--[\s\S]*?-->|<[^>]+>/g, ' ');
+  ok(!DASH.test(shown), 'no dashes on the page');
+  ok(!/Josh|Farley/.test(shown), 'no founder names on the page');
+  const strings = (js.match(/'[^'\n]*'|`[^`\n]*`/g) || []).filter(x => !x.includes('@'));
+  ok(!strings.some(x => DASH.test(x)), 'no dashes in wizard.js text');
+  ok(!strings.some(x => /Josh|Farley/.test(x)), 'no founder names in wizard.js text');
+  ok(html.includes(`data-count="skills">${SKILLS.filter(s => !s.soon).length}<`), 'skills count matches');
+  ok(html.includes(`data-count="swaps">${SWAPS.length}<`), 'swaps count matches');
+  const keys = [...js.matchAll(/TRY\['([^']+)'\]/g)].map(m => m[1]);
+  ok(keys.length === 4 && keys.every(k => TRY[k]), 'preview lines come from TRY');
+  ok(!/Josh|Farley/.test(briefText(buildBrief({ groups: ['home'], name: 'X', email: 'x@y.z' })).split('YOUR PRIVACY')[1] || ''), 'privacy line has no names');
+}
+
+{ // pattern spotter joins up only the health logs they picked, and its rule reaches the brief
+  const b = buildBrief({ groups: ['personal'], skills: ['pattern-spotter', 'food-diary', 'workout-log'], name: 'X', email: 'x@y.z' });
+  const j = b.jobs.find(x => x.id === 'pattern-spotter');
+  ok(j && [...j.reads].sort().join() === 'food-diary,workout-log', 'pattern spotter reads picked logs only');
+  ok(briefText(b).includes('does not diagnose'), 'pattern spotter rule in the brief');
+  ok(buildBrief({ groups: ['personal'], skills: ['pattern-spotter'], name: 'X', email: 'x@y.z' }).jobs[0].reads.length === 0, 'reads nothing when alone');
+}
+
 console.log(`PASS ${n} checks`);

@@ -1,15 +1,15 @@
 // Hermes setup wizard: step engine, rendering, send. Plain ES module.
 // Worker B file. Styles come from Worker A. Data from catalogue.js, steps.js, brief.js.
-import { GROUPS, SKILLS, TOOLS, APPS, SWAPS } from './catalogue.js';
+import { GROUPS, SKILLS, TOOLS, APPS, SWAPS, TRY } from './catalogue.js';
 import { visibleSteps, validate, OWN, ownValues, listValues, takesOwn, swapChoices, applySwaps } from './steps.js';
 import { buildBrief, briefText } from './brief.js';
 
 const ALIAS = 'josh@parkup.nz'; // FormSubmit target (activated 18 Nov 2026); can swap for the random alias later
 const CONTACT_EMAIL = 'josh@parkup.nz'; // public email shown in the send fallback
 const KEY = 'tlm-wizard-v1';
-const PRIVACY = 'Only Josh and Farley read your answers. They reach us by email through FormSubmit, which keeps a copy for up to 30 days. Ask any time and we delete them.';
 const PROMISE = 'It always asks you before it sends, posts or pays anything.';
-const GROWS = 'Your kit can grow. After set-up, just tell it "make this a skill" and it builds a new one with you.';
+const KEY_NOTE = '🔑 When we hand it over, you get your own encryption key. Keep it somewhere safe. Without it, no one can open your data, not even us.';
+const GROWS = 'Your kit can grow. After setup, just tell it "make this a skill" and it builds a new one with you.';
 
 const wizardEl = document.getElementById('wizard');
 let a = {};            // answers: field id -> string or string[]
@@ -30,6 +30,31 @@ function el(tag, cls, text) {
   if (text !== undefined && text !== null) node.textContent = String(text);
   return node;
 }
+// Step titles: the last two words get the Inference gradient (text stays one string for screen readers)
+function titleEl(text) {
+  const h = el('h1', 'screen-title'); // the page's top heading once the wizard starts
+  const w = String(text).split(' ');
+  if (w.length > 1) {
+    const tail = w.splice(w.length > 2 ? -2 : -1).join(' ');
+    h.append(w.join(' ') + ' ');
+    h.appendChild(el('span', 'grad', tail));
+  } else h.textContent = text;
+  h.tabIndex = -1;
+  return h;
+}
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)');
+// Counts a number up from 0, like the stats on inference.nz. fmt turns the number into text.
+function countUp(node, to, fmt = String, ms = 1100) {
+  if (REDUCED.matches) { node.textContent = fmt(to); return; }
+  const t0 = performance.now();
+  const tick = (t) => {
+    const k = Math.min(1, (t - t0) / ms);
+    node.textContent = fmt(Math.round(to * (1 - Math.pow(1 - k, 4)))); // ease out
+    if (k < 1) requestAnimationFrame(tick);
+  };
+  node.textContent = fmt(0);
+  requestAnimationFrame(tick);
+}
 function asArray(v) {
   if (Array.isArray(v)) return v;
   if (v === undefined || v === null || v === '') return [];
@@ -43,7 +68,10 @@ function loadSaved() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
     const data = JSON.parse(raw);
-    if (data && typeof data === 'object' && !Array.isArray(data)) return data;
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      if (/^Let \w+ pick$/.test(data.model)) data.model = 'Inference, hosted in NZ (recommended)'; // renamed 19 Nov 2026
+      return data;
+    }
   } catch (e) { /* ignore broken storage */ }
   return null;
 }
@@ -58,7 +86,7 @@ function resolveOptions(f) {
   if (f.source === 'apps') return APPS.map(x => ({ value: x.id, title: x.title, line: x.line, icon: x.icon, soon: !!x.soon }));
   if (f.source === 'swaps') {
     return swapChoices(a).map(w => ({ value: w.id, title: w.title, icon: w.icon,
-      line: `Like ${w.examples}. About $${w.nzd} a year.` }));
+      line: `Like ${w.examples}. About NZ$${w.nzd} a year.` }));
   }
   if (f.source === 'skills') {
     const picked = asArray(a.groups);
@@ -354,8 +382,7 @@ function renderStep(step, vs) {
   root.appendChild(progressEl(idx + 1, y));
   const sec = el('section', 'screen');
   sec.dataset.step = step.id;
-  const h = el('h2', 'screen-title', step.title);
-  h.tabIndex = -1;
+  const h = titleEl(step.title);
   sec.appendChild(h);
   if (step.lead) sec.appendChild(el('p', 'screen-lead', step.lead));
   for (const f of step.fields) {
@@ -420,7 +447,7 @@ function summarySection(step) {
     const own = takesOwn(f) ? ownValues(a, f.id) : [];
     const empty = own.length === 0 && (Array.isArray(v) ? v.length === 0 : v === undefined || v === null || v === '');
     if (empty && (f.optional || f.collapsed)) continue; // empty more.* never shows
-    dl.appendChild(el('dt', null, f.label));
+    dl.appendChild(el('dt', null, f.short || f.label));
     let text = empty ? 'Not answered'
       : [...asArray(v).map(x => titleFor(f, x)), ...own].join(', ');
     if (f.type === 'textarea') { const cut = text.split('\n')[0]; if (cut.length < text.length) text = cut + '...'; }
@@ -461,8 +488,7 @@ function renderModeChoice() {
   const root = el('div', 'step-view');
   const sec = el('section', 'screen');
   sec.dataset.step = 'mode';
-  const h = el('h2', 'screen-title', 'Choose your setup');
-  h.tabIndex = -1;
+  const h = titleEl('Choose your setup');
   sec.appendChild(h);
   sec.appendChild(el('p', 'screen-lead', 'Change when you like. Your answers stay.'));
   const box = el('div', 'cards');
@@ -489,10 +515,9 @@ function renderCheck(vs) {
 
   const sec = el('section', 'screen');
   sec.dataset.step = 'check';
-  const h = el('h2', 'screen-title', 'Check your answers');
-  h.tabIndex = -1;
+  const h = titleEl('Check your answers');
   sec.appendChild(h);
-  sec.appendChild(el('p', 'screen-lead', 'Look it over. Change anything you like, then send it to Josh.'));
+  sec.appendChild(el('p', 'screen-lead', 'Look it over. Change anything you like, then send it to us.'));
 
   const sum = el('div', 'summary');
   sum.appendChild(setupSection());
@@ -505,7 +530,11 @@ function renderCheck(vs) {
   const swaps = vs.some(s => s.id === 'swaps') ? SWAPS.filter(w => asArray(a.swaps).includes(w.id) && swapChoices(a).includes(w)) : [];
   if (swaps.length) {
     const total = swaps.reduce((t, w) => t + w.nzd, 0);
-    sec.appendChild(el('p', 'kit-note', `The apps you picked cost about NZ$${total} a year. Your assistant does those jobs in one place.`));
+    const note = el('p', 'kit-note', 'The apps you picked cost about ');
+    const sum = note.appendChild(el('strong', null, `NZ$${total}`));
+    note.append(' a year. Your assistant does those jobs in one place.');
+    sec.appendChild(note);
+    countUp(sum, total, n => `NZ$${n}`);
   }
   const mine = vs.some(s => s.id === 'skills') ? listValues(a['own.skills']) : [];
   const kit = [...picked, ...mine.map(t => ({ icon: '✨', title: t, line: 'Your own idea' }))];
@@ -542,11 +571,13 @@ function renderCheck(vs) {
 function renderDone() {
   const sec = el('section', 'screen done');
   sec.dataset.step = 'done';
-  const h = el('h2', 'screen-title', 'Thanks, ' + doneName + '.');
+  const h = el('h1', 'screen-title', 'Thanks, ');
+  h.appendChild(el('span', 'grad', doneName + '.'));
   h.tabIndex = -1;
   sec.appendChild(h);
-  sec.appendChild(el('p', 'screen-lead', 'Josh will be in touch within 2 days.'));
+  sec.appendChild(el('p', 'screen-lead', 'We will be in touch within 2 days.'));
   if (doneTries.length) sec.appendChild(firstWeekEl(doneTries));
+  sec.appendChild(el('p', 'kit-note', KEY_NOTE));
   sec.appendChild(el('p', 'kit-note', GROWS));
   return { root: sec, focus: h };
 }
@@ -568,7 +599,7 @@ function showSendError(text) {
   const h = el('h3', 'send-error-title', 'Sending failed');
   h.tabIndex = -1;
   box.appendChild(h);
-  box.appendChild(el('p', null, 'Sorry about that. Your answers are still here. Copy your brief and send it to us another way.'));
+  box.appendChild(el('p', null, 'Sorry about that. Your answers are still here. Copy your answers below and send them to us another way.'));
   const line = el('p', 'send-error-links');
   if (CONTACT_EMAIL !== 'REPLACE_ME') { // hide the link until a real address is set
     line.appendChild(document.createTextNode('Email it to '));
@@ -717,10 +748,8 @@ function render() {
   wizardEl.appendChild(view.root);
   view.root.classList.add('step-view');
   const sec = view.root.querySelector('.screen');
-  if (sec) { // one frame with the enter class, then off, so CSS can transition
-    sec.classList.add('is-entering');
-    requestAnimationFrame(() => sec.classList.remove('is-entering'));
-  }
+  if (sec) [...sec.children].forEach((c, i) => c.style.setProperty('--i', i)); // CSS fades them up one after another
+  view.root.querySelectorAll('.card-icon').forEach(i => i.setAttribute('aria-hidden', 'true')); // emoji are decoration
   let focused = false;
   if (pendingErrStep === stepId) { // a gated jump opens this step with its errors shown
     const st = vs.find(s => s.id === stepId);
@@ -744,7 +773,157 @@ function start(mode) {
   stepId = firstStepToOpen(visibleSteps(a));
   render();
 }
+/* ---------- page chrome: theme toggle, floating header, intro stats and chat preview ---------- */
+function isDark() {
+  const t = document.documentElement.dataset.theme;
+  return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function themeToggle() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const paint = () => btn.setAttribute('aria-label', isDark() ? 'Switch to light theme' : 'Switch to dark theme');
+  btn.addEventListener('click', () => {
+    const t = isDark() ? 'light' : 'dark';
+    document.documentElement.dataset.theme = t;
+    try { localStorage.setItem('tlm-theme', t); } catch (e) { /* private mode, fine */ }
+    paint();
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', paint);
+  paint();
+}
+function floatingHeader() { // full width at the top, a pill once you scroll (as on inference.nz)
+  const hdr = document.querySelector('.site-header');
+  if (!hdr) return;
+  const on = () => hdr.classList.toggle('is-scrolled', window.scrollY > 24);
+  window.addEventListener('scroll', on, { passive: true });
+  on();
+}
+export const STAT_COUNTS = { skills: SKILLS.filter(s => !s.soon).length, swaps: SWAPS.length };
+function scrollReveal() { // intro sections fade up when they come into view
+  const blocks = document.querySelectorAll('.intro .block');
+  if (REDUCED.matches || !('IntersectionObserver' in window) || !blocks.length) return;
+  document.documentElement.classList.add('js-reveal');
+  const io = new IntersectionObserver((es) => {
+    for (const e of es) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+  }, { rootMargin: '0px 0px -10% 0px' });
+  blocks.forEach(b => io.observe(b));
+}
+function introStats() {
+  for (const n of document.querySelectorAll('[data-count]')) {
+    const k = n.dataset.count;
+    countUp(n, STAT_COUNTS[k] ?? Number(k));
+  }
+}
+
+// What you can say to it, one tab per area. The "say" lines are the real TRY lines.
+export const PREVIEW = [
+  { tab: 'Home', accent: '#059669', ch: 'meals', say: TRY['meal-planner'], reply: 'Done. Five dinners planned and 23 things on the shopping list, sorted by aisle.' },
+  { tab: 'Health', accent: '#8b5cf6', ch: 'cycle', say: TRY['cycle-tracker'], reply: 'Logged, day 1. I will give you a heads up two days before the next one.' },
+  { tab: 'Money', accent: '#d97706', ch: 'budget', say: TRY['budget-helper'], reply: 'Here is this month so far:', bars: [['Groceries', 612], ['Fuel', 240], ['Eating out', 180]] },
+  { tab: 'Work', accent: '#3b82f6', ch: 'quotes', say: TRY['quote-maker'], reply: 'Your quote is ready. Want me to email it to the client?', file: 'Quote-deck-clean.pdf' },
+];
+function chatPreview() {
+  const box = document.getElementById('preview');
+  if (!box) return;
+  const bar = el('div', 'pv-tabs');
+  const tabs = bar.appendChild(el('div', 'pv-tablist'));
+  tabs.setAttribute('role', 'tablist');
+  tabs.setAttribute('aria-label', 'Example chats');
+  const chan = el('div', 'pv-channel');
+  const body = el('div', 'pv-body');
+  body.id = 'pv-body';
+  body.setAttribute('role', 'tabpanel');
+  body.tabIndex = 0;
+  const btns = PREVIEW.map((p, i) => {
+    const b = el('button', 'pv-tab', p.tab);
+    b.type = 'button';
+    b.id = 'pv-tab-' + i;
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-controls', 'pv-body');
+    b.addEventListener('click', () => { show(i); hold = true; }); // a tap stops the rotation
+    tabs.appendChild(b);
+    return b;
+  });
+  bar.appendChild(el('span', 'pv-status', 'Online'));
+  const foot = el('div', 'pv-foot');
+  foot.append(el('span', null, 'Private'), el('span', null, 'Hosted in NZ'));
+  const took = foot.appendChild(el('span', null, 'Replied in 1.4 s'));
+  box.append(bar, chan, body, foot);
+
+  let cur = 0, hold = false, typing = 0;
+  function reply(p) {
+    const m = el('div', 'pv-msg pv-it');
+    m.appendChild(el('span', null, p.reply));
+    if (p.bars) {
+      const bars = m.appendChild(el('div', 'pv-bars'));
+      const max = Math.max(...p.bars.map(x => x[1]));
+      for (const [name, v] of p.bars) {
+        const row = bars.appendChild(el('div', 'pv-bar'));
+        row.appendChild(el('span', null, name));
+        row.appendChild(el('i')).style.width = Math.round((v / max) * 100) + '%';
+        row.appendChild(el('span', null, '$' + v));
+      }
+    }
+    if (p.file) m.appendChild(el('span', 'pv-file', '📄 ' + p.file));
+    return m;
+  }
+  function show(i) {
+    cur = i;
+    clearTimeout(typing);
+    const p = PREVIEW[i];
+    box.style.setProperty('--tab', p.accent);
+    btns.forEach((b, j) => { b.setAttribute('aria-selected', String(j === i)); b.tabIndex = j === i ? 0 : -1; });
+    body.setAttribute('aria-labelledby', btns[i].id);
+    chan.replaceChildren(el('span', 'pv-tag', '#'), el('span', null, p.ch + '  ·  your assistant'));
+    const you = el('p', 'pv-msg pv-you', p.say);
+    body.replaceChildren(el('p', 'pv-label', 'You say'), you, el('p', 'pv-label', 'It replies'));
+    if (REDUCED.matches) { body.appendChild(reply(p)); return; }
+    took.textContent = 'Replied in ' + (0.8 + Math.random() * 1.6).toFixed(1) + ' s'; // changes each time, like the stats on inference.nz
+    let n = 0; // types your message out, then the dots, then the reply
+    you.classList.add('is-typing');
+    you.setAttribute('aria-label', p.say);
+    const type = () => {
+      if (!box.isConnected) return; // the wizard replaced the intro
+      you.textContent = p.say.slice(0, ++n);
+      if (n < p.say.length) { typing = setTimeout(type, 28); return; }
+      you.classList.remove('is-typing');
+      const dots = body.appendChild(el('div', 'pv-typing'));
+      dots.setAttribute('aria-hidden', 'true');
+      for (let k = 0; k < 3; k++) dots.appendChild(el('span'));
+      typing = setTimeout(() => { if (box.isConnected) dots.replaceWith(reply(p)); }, 800);
+    };
+    you.textContent = '';
+    typing = setTimeout(type, 200);
+  }
+  tabs.addEventListener('keydown', (e) => { // arrow keys move between tabs
+    const last = PREVIEW.length - 1;
+    const to = { ArrowRight: (cur + 1) % PREVIEW.length, ArrowLeft: (cur + last) % PREVIEW.length, Home: 0, End: last }[e.key];
+    if (to === undefined) return;
+    e.preventDefault();
+    show(to);
+    btns[cur].focus();
+    hold = true;
+  });
+  let hover = false, focus = false; // either one pauses the rotation
+  box.addEventListener('mouseenter', () => { hover = true; });
+  box.addEventListener('mouseleave', () => { hover = false; });
+  box.addEventListener('focusin', () => { focus = true; });
+  box.addEventListener('focusout', () => { focus = false; });
+  show(0);
+  if (REDUCED.matches) return;
+  const timer = setInterval(() => {
+    if (!box.isConnected) { clearInterval(timer); return; } // the wizard replaced the intro
+    if (hold || hover || focus || document.hidden) return;
+    show((cur + 1) % PREVIEW.length);
+  }, 6000);
+}
+
 function init() {
+  themeToggle();
+  floatingHeader();
+  introStats();
+  scrollReveal();
+  chatPreview();
   saved = loadSaved();
   if (saved) {
     a = saved;

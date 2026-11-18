@@ -16,12 +16,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="index,follow">
   <title>Set up Hermes, your private AI assistant | The Lifestyle Manager</title>
-  <meta name="description" content="A short five minute setup for Hermes, a private AI assistant that runs on its own computer for you. Tell us about your life and we build it around you.">
+  <meta name="description" content="A short five-minute setup for Hermes, a private AI assistant that runs on its own computer for you. Tell us about your life and we build it around you.">
   <link rel="canonical" href="https://thelifestylemanager.nz/">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/images/Logo.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/images/Logo.png">
   <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#0f1b2d">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="assets/images/Favicon.ico" type="image/x-icon">
   <meta property="og:title" content="Set up Hermes, your private AI assistant | The Lifestyle Manager" />
   <meta property="og:description" content="A private AI assistant that runs on its own computer for you. Answer a few questions and we set Hermes up around your life. Takes about five minutes." />
@@ -33,55 +34,127 @@
   <meta name="twitter:title" content="Set up Hermes, your private AI assistant | The Lifestyle Manager" />
   <meta name="twitter:description" content="A private AI assistant that runs on its own computer for you. Answer a few questions and we set Hermes up around your life." />
   <meta name="twitter:image" content="https://thelifestylemanager.nz/assets/images/Logo.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Theme before first paint: the saved choice, else the system. wizard.js owns the toggle. */
+    try { var t = localStorage.getItem('tlm-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
+  <!-- Inference logo mark (from inference.nz/logo.svg), defined once. The I uses currentColor so it works in both themes. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="inf-ring" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00b4d8"/>
+        <stop offset="100%" stop-color="#7b2ff7"/>
+      </linearGradient>
+      <clipPath id="inf-front"><rect x="50" y="0" width="50" height="100"/></clipPath>
+    </defs>
+    <symbol id="inf-mark" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="50" rx="38" ry="13" transform="rotate(-28 50 50)" stroke="url(#inf-ring)" stroke-width="3.5" fill="none"/>
+      <rect x="22" y="14" width="56" height="11" rx="1" fill="currentColor"/>
+      <rect x="37" y="14" width="26" height="72" fill="currentColor"/>
+      <rect x="22" y="75" width="56" height="11" rx="1" fill="currentColor"/>
+      <ellipse cx="50" cy="50" rx="38" ry="13" transform="rotate(-28 50 50)" stroke="url(#inf-ring)" stroke-width="3.5" fill="none" clip-path="url(#inf-front)"/>
+    </symbol>
+  </svg>
+
   <header class="site-header">
     <div class="header-inner">
       <span class="site-logo">
-        <img src="assets/images/Logo.png" alt="" width="34" height="34">
-        <span class="site-name">The Lifestyle Manager</span>
+        <svg class="inf-mark" aria-hidden="true"><use href="#inf-mark"/></svg>
+        <span class="brand-inf">Inference</span>
       </span>
+      <span class="brand-sep" aria-hidden="true"></span>
+      <span class="site-name">The Lifestyle Manager</span>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+      </button>
     </div>
   </header>
 
   <main id="wizard">
     <section class="screen intro" data-step="intro">
-      <h1>Your own AI assistant, set up for you.</h1>
-      <p class="lead">Hermes is a private AI agent with its own computer, set up for you and no one else. It handles the small jobs in your day so you can get on with the big ones. This setup takes about five minutes.</p>
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow rise"><span class="eyebrow-dot" aria-hidden="true"></span>Made in NZ. Hosted in NZ.</p>
+          <h1 class="rise">Your own AI assistant,<br><span class="grad">set up for you.</span></h1>
+          <p class="lead rise">Hermes is a private AI assistant with its own computer, set up for you and no one else. It handles the small jobs in your day so you can get on with the big ones. This setup takes about five minutes.</p>
+          <div class="hero-actions rise">
+            <button id="start" class="btn btn-primary btn-go" type="button">Let's start</button>
+            <button id="start-advanced" class="btn btn-ghost" type="button">I'm technical: advanced setup</button>
+          </div>
+          <dl class="stats rise">
+            <div><dt><span data-count="skills">51</span></dt><dd>jobs it can do</dd></div>
+            <div><dt><span data-count="swaps">17</span></dt><dd>apps it could replace</dd></div>
+            <div><dt><span data-count="5">5</span> min</dt><dd>to set up</dd></div>
+          </dl>
+        </div>
+        <div class="preview rise" id="preview" role="group" aria-label="Examples of what you can say to it"></div>
+      </div>
 
-      <div class="how">
-        <div class="how-card">
-          <span class="how-num">1</span>
-          <h2>Tell us about your life</h2>
-          <p>A few short questions. No wrong answers.</p>
-        </div>
-        <div class="how-card">
-          <span class="how-num">2</span>
-          <h2>We set it up</h2>
-          <p>Josh and Farley build Hermes around your answers.</p>
-        </div>
-        <div class="how-card">
-          <span class="how-num">3</span>
-          <h2>It works for you, you stay in charge</h2>
-          <p>It runs your jobs quietly and always checks with you first.</p>
+      <div class="block">
+        <p class="kicker">How it works</p>
+        <h2 class="block-title">From a few questions to your own assistant</h2>
+        <div class="how">
+          <div class="how-card">
+            <span class="how-num">01</span>
+            <h3>Tell us about your life</h3>
+            <p>A few short questions. No wrong answers.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">02</span>
+            <h3>We set it up</h3>
+            <p>Our team builds your assistant around your answers.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">03</span>
+            <h3>It works, you stay in charge</h3>
+            <p>It runs your jobs quietly and always checks with you first.</p>
+          </div>
         </div>
       </div>
 
-      <p class="privacy">🔒 Only Josh and Farley read your answers. They reach us by email through FormSubmit, which keeps a copy for up to 30 days. Your draft saves in this browser until you send it. Ask any time and we delete them.</p>
+      <div class="block">
+        <p class="kicker">Where it runs</p>
+        <h2 class="block-title">Locally grown AI</h2>
+        <div class="bento">
+          <div class="how-card bento-wide">
+            <span class="how-num">01</span>
+            <h3>The brains are Kiwi hosted</h3>
+            <p>The AI model behind your assistant runs on Inference, a New Zealand AI service. Your chats go to computers here, not to a big overseas AI company.</p>
+            <a class="runs-on" href="https://inference.nz/" target="_blank" rel="noopener">
+              <svg class="inf-mark" aria-hidden="true"><use href="#inf-mark"/></svg>
+              <span>Runs on <strong>Inference</strong></span>
+            </a>
+          </div>
+          <div class="how-card">
+            <span class="how-num">02</span>
+            <h3>Its own computer</h3>
+            <p>Your assistant lives on a private computer set up only for you. It is not a shared chat app.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">03</span>
+            <h3>Your stuff stays home, locked up</h3>
+            <p>Its memory and files live on NZ servers, encrypted with your own key. You hold the key, so keep it safe: if it is lost, your data cannot be recovered.</p>
+          </div>
+        </div>
+        <p class="block-foot">Free range, locally grown, served fresh. 🥝</p>
+      </div>
 
-      <button id="start" class="btn btn-primary" type="button">Let's start</button>
-      <button id="start-advanced" class="link-advanced" type="button">I'm technical: advanced setup</button>
+      <p class="privacy">🔒 Only our small NZ team reads your answers. They reach us by email through FormSubmit, a simple forwarding service, which keeps a copy for up to 30 days. Your draft saves in this browser until you send it. Ask any time and we will delete them.</p>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>The Lifestyle Manager. Private AI assistants, set up for you.</p>
+    <p>The Lifestyle Manager. Private AI assistants, made in NZ.</p>
+    <a class="runs-on" href="https://inference.nz/" target="_blank" rel="noopener">
+      <svg class="inf-mark" aria-hidden="true"><use href="#inf-mark"/></svg>
+      <span>Runs on <strong>Inference</strong></span>
+    </a>
   </footer>
 
-  <script type="module" src="wizard.js"></script>
+  <script type="module" src="wizard.js?v=5"></script>
 </body>
 </html>
