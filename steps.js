@@ -9,7 +9,7 @@
 // the options that exist right now (catalogue ids for source fields, eligible
 // skills for the skills field). The email help says how answers reach us.
 
-import { GROUPS, SKILLS, TOOLS, APPS } from './catalogue.js';
+import { GROUPS, SKILLS, TOOLS, APPS, SWAPS } from './catalogue.js';
 
 const has = (a, g) => Array.isArray(a.groups) && a.groups.includes(g);
 const isAdv = (a) => a && a.mode === 'advanced';
@@ -24,6 +24,47 @@ function moreField(stepId) {
     collapsed: true,
   };
 }
+
+// Round 4: custom answers. A chips field (unless noOwn) can hold the
+// visitor's own answers in the sibling key <fieldId>.own (array of strings).
+// Single-pick fields keep one: an own answer and a preset never both stand.
+// A 'list' field holds an array of free text entries, one idea per entry.
+export const OWN = '.own';
+export function ownValues(a, id) {
+  const v = a ? a[id + OWN] : undefined;
+  return (Array.isArray(v) ? v : (typeof v === 'string' ? [v] : []))
+    .map(x => String(x).trim()).filter(Boolean);
+}
+export function listValues(v) {
+  return (Array.isArray(v) ? v : (typeof v === 'string' ? [v] : []))
+    .map(x => String(x).trim()).filter(Boolean);
+}
+// A field can take custom answers: chips only, and not where a fixed value matters.
+export const takesOwn = (f) => f.type === 'chips' && !f.noOwn;
+
+// The skills step's own-skill list, in place of its more field.
+const OWN_SKILLS = {
+  id: 'own.skills',
+  type: 'list',
+  label: 'Add your own skill',
+  help: "One idea per box, for example: Organise the kids' photos by age. Each one gets its own channel.",
+  optional: true,
+  collapsed: true,
+  addLabel: 'Add another',
+};
+
+// The swaps step's list of other paid apps, in place of its more field.
+const OWN_SWAPS = {
+  id: 'own.swaps',
+  type: 'list',
+  label: 'Another app you pay for',
+  help: 'Name it and what you pay, for example: Flo, $70 a year.',
+  optional: true,
+  collapsed: true,
+  addLabel: 'Add another',
+};
+// Steps whose bottom field is a list instead of "Add more detail".
+const LAST_FIELD = { skills: OWN_SKILLS, swaps: OWN_SWAPS };
 
 // Steps as authored. The more field is added to every one at the bottom.
 const BASE_STEPS = [
@@ -98,11 +139,21 @@ const BASE_STEPS = [
     ],
   },
   {
+    // Round 4: paid apps it could stand in for. Picking one ticks its skills.
+    id: 'swaps',
+    title: 'Paying for apps it could replace?',
+    lead: 'Pick any you pay for now. It does the main job of each, all in one chat. A few extras, like live bank feeds, stay with the app.',
+    when: (a) => swapChoices(a).length > 0,
+    fields: [
+      { id: 'swaps', type: 'cards', label: 'Pick any that apply', multiple: true, optional: true, source: 'swaps' },
+    ],
+  },
+  {
     id: 'skills',
     title: 'Pick what it does for you',
     lead: 'Start with a few. Each one gets its own channel.',
     fields: [
-      { id: 'skills', type: 'cards', label: 'Choose one or more', multiple: true, source: 'skills' },
+      { id: 'skills', type: 'cards', label: 'Choose one or more', multiple: true, source: 'skills', orList: 'own.skills' },
     ],
   },
   {
@@ -132,20 +183,31 @@ const BASE_STEPS = [
     lead: 'All optional. Skip anything you do not care about.',
     when: (a) => isAdv(a),
     fields: [
-      { id: 'model', type: 'chips', label: 'Which model should it run?', optional: true, options: ['Let Josh pick', 'Nous Portal', 'OpenRouter', 'Anthropic', 'OpenAI', 'My own endpoint'] },
+      { id: 'model', type: 'chips', noOwn: true, label: 'Which model should it run?', optional: true, options: ['Let Josh pick', 'Nous Portal', 'OpenRouter', 'Anthropic', 'OpenAI', 'My own endpoint'] },
       { id: 'extras', type: 'chips', label: 'Anything extra?', multiple: true, optional: true, options: ['Web app (Open WebUI)', 'Voice notes', 'API access', 'SSH access for me', 'Git repo for its skills', 'MCP servers', 'Browser tools', 'Local files sync'] },
       { id: 'integrations', type: 'textarea', label: 'Accounts, APIs or MCP servers it should use', optional: true, help: 'Names only, never paste passwords or keys.' },
       { id: 'jobs', type: 'textarea', label: 'Scheduled jobs you want', optional: true, help: 'What they do and when they run.' },
-      { id: 'access', type: 'chips', label: 'When should it ask you first?', optional: true, options: ['Ask me before anything outward', 'Ask only for money and posts', "I'll set it myself later"] },
+      { id: 'access', type: 'chips', noOwn: true, label: 'When should it ask you first?', optional: true, options: ['Ask me before anything outward', 'Ask only for money and posts', "I'll set it myself later"] },
     ],
   },
   {
     id: 'talk',
     title: 'How do you want to talk to it?',
     lead: 'This is the app you will message it in.',
+    // Round 4: shown, not asked. What it can send when a job needs more than text.
+    showcase: {
+      title: 'Most days it just texts you. When a job needs more, it sends the right file.',
+      items: [
+        { icon: '📊', title: 'Charts', line: 'From your spending or sales.' },
+        { icon: '📄', title: 'PDF quotes and invoices', line: 'Ready to check and send.' },
+        { icon: '📑', title: 'Detailed reports', line: 'When a summary is not enough.' },
+        { icon: '📗', title: 'Spreadsheets', line: 'Your numbers, ready for Excel.' },
+      ],
+      foot: 'Just ask, for example: send me that as a chart.',
+    },
     fields: [
       { id: 'app', type: 'cards', label: 'Pick one', source: 'apps' },
-      { id: 'users', type: 'chips', label: 'Who else will use it?', options: ['Just me', 'Me plus 1', '2 to 5', 'More'] },
+      { id: 'users', type: 'chips', noOwn: true, label: 'Who else will use it?', options: ['Just me', 'Me plus 1', '2 to 5', 'More'] },
       { id: 'tone', type: 'cards', label: 'How should it talk?', options: [
         { value: 'warm', title: 'Warm and friendly', icon: '😊' },
         { value: 'sharp', title: 'Short and sharp', icon: '🔪' },
@@ -171,7 +233,8 @@ const BASE_STEPS = [
 ];
 
 // Round 2: every step gets the one collapsed "Add more detail" field.
-export const STEPS = BASE_STEPS.map(s => ({ ...s, fields: [...s.fields, moreField(s.id)] }));
+// Round 4: the skills step gets the own-skill list instead.
+export const STEPS = BASE_STEPS.map(s => ({ ...s, fields: [...s.fields, LAST_FIELD[s.id] || moreField(s.id)] }));
 
 const TONES = {
   warm: 'Warm and friendly',
@@ -192,6 +255,25 @@ function fitsGroups(s, a) {
 export function skillChoices(a) {
   const pool = SKILLS.filter(s => fitsGroups(s, a));
   return [...pool.filter(s => s.popular), ...pool.filter(s => !s.popular)];
+}
+
+// Swaps that fit the groups picked now: at least one of their skills fits.
+export function swapChoices(a) {
+  return SWAPS.filter(w => SKILLS.some(s => w.skills.includes(s.id) && fitsGroups(s, a)));
+}
+// The skills list with every picked swap's fitting skills added. Never removes.
+export function applySwaps(a) {
+  const answers = a || {};
+  const out = Array.isArray(answers.skills) ? [...answers.skills] : [];
+  const picked = Array.isArray(answers.swaps) ? answers.swaps : [];
+  for (const w of swapChoices(answers)) {
+    if (!picked.includes(w.id)) continue;
+    for (const id of w.skills) {
+      const s = SKILLS.find(x => x.id === id);
+      if (s && fitsGroups(s, answers) && !out.includes(id)) out.push(id);
+    }
+  }
+  return out;
 }
 
 // Build the tune step's ask fields from the picked skills' ask lists.
@@ -233,6 +315,7 @@ export function fieldValues(f, a) {
   const answers = a || {};
   if (f.source === 'skills') return skillChoices(answers).map(s => s.id);
   if (f.source === 'groups') return GROUPS.map(g => g.id);
+  if (f.source === 'swaps') return swapChoices(answers).map(w => w.id);
   if (f.source === 'tools') return TOOLS.map(t => t.id);
   if (f.source === 'apps') return APPS.map(x => x.id);
   if (Array.isArray(f.options)) return f.options.map(o => (typeof o === 'string' ? o : o.value));
@@ -245,6 +328,8 @@ export function validate(step, a) {
   for (const f of step.fields) {
     if (f.when && !f.when(answers)) continue;
     if (f.optional) continue;
+    if (takesOwn(f) && ownValues(answers, f.id).length) continue; // their own answer counts
+    if (f.orList && listValues(answers[f.orList]).length) continue; // own skills count as picks
     let v = answers[f.id];
     if (Array.isArray(v)) v = v.map(x => (typeof x === 'string' ? x.trim() : x));
     else if (typeof v === 'string') v = v.trim(); // blank text is not filled in

@@ -1,7 +1,7 @@
 // Hermes setup wizard: step engine, rendering, send. Plain ES module.
 // Worker B file. Styles come from Worker A. Data from catalogue.js, steps.js, brief.js.
-import { GROUPS, SKILLS, TOOLS, APPS } from './catalogue.js';
-import { visibleSteps, validate } from './steps.js';
+import { GROUPS, SKILLS, TOOLS, APPS, SWAPS } from './catalogue.js';
+import { visibleSteps, validate, OWN, ownValues, listValues, takesOwn, swapChoices, applySwaps } from './steps.js';
 import { buildBrief, briefText } from './brief.js';
 
 const ALIAS = 'josh@parkup.nz'; // FormSubmit target (activated 18 Nov 2026); can swap for the random alias later
@@ -9,6 +9,7 @@ const CONTACT_EMAIL = 'josh@parkup.nz'; // public email shown in the send fallba
 const KEY = 'tlm-wizard-v1';
 const PRIVACY = 'Only Josh and Farley read your answers. They reach us by email through FormSubmit, which keeps a copy for up to 30 days. Ask any time and we delete them.';
 const PROMISE = 'It always asks you before it sends, posts or pays anything.';
+const GROWS = 'Your kit can grow. After set-up, just tell it "make this a skill" and it builds a new one with you.';
 
 const wizardEl = document.getElementById('wizard');
 let a = {};            // answers: field id -> string or string[]
@@ -17,6 +18,7 @@ let fromCheck = false; // came from the check screen?
 let started = false;
 let sending = false;
 let doneName = '';        // first name kept for the done screen
+let doneTries = [];       // first week lines kept for the done screen
 let honeyInput = null;    // honeypot on the check screen
 let pendingErrStep = null; // when set, render shows this step's errors
 let saved = null;          // draft read from storage at boot
@@ -54,6 +56,10 @@ function resolveOptions(f) {
   if (f.source === 'groups') return GROUPS.map(g => ({ value: g.id, title: g.title, line: g.line, icon: g.icon }));
   if (f.source === 'tools') return TOOLS.map(t => ({ value: t.id, title: t.title, line: t.line, icon: t.icon }));
   if (f.source === 'apps') return APPS.map(x => ({ value: x.id, title: x.title, line: x.line, icon: x.icon, soon: !!x.soon }));
+  if (f.source === 'swaps') {
+    return swapChoices(a).map(w => ({ value: w.id, title: w.title, icon: w.icon,
+      line: `Like ${w.examples}. About $${w.nzd} a year.` }));
+  }
   if (f.source === 'skills') {
     const picked = asArray(a.groups);
     const list = SKILLS.filter(s => s.groups.some(g => picked.includes(g)));
@@ -75,8 +81,10 @@ function selectHandlers(btn, f, opt) {
     if (f.multiple) {
       const arr = asArray(a[f.id]);
       a[f.id] = isOn() ? arr.filter(v => v !== opt.value) : [...arr, opt.value];
+      if (f.source === 'swaps') a.skills = applySwaps(a); // a picked app ticks its skills right away, whatever the way out
     } else {
       a[f.id] = opt.value; // single choice: tapping picks it
+      if (a[f.id + OWN]) { delete a[f.id + OWN]; btn.parentElement._paintOwn?.(); } // a preset replaces their own answer
     }
     save();
     btn.parentElement.querySelectorAll('[aria-pressed]').forEach(b => b._paint && b._paint());
@@ -90,6 +98,128 @@ function selectHandlers(btn, f, opt) {
     }
   });
   btn._paint();
+}
+
+/* ---------- custom answers: an Other chip on chips fields ---------- */
+// Own answers sit in the same chip box, selected, tap to remove. Multi-pick
+// fields take several; a single-pick field keeps one and drops the preset.
+function ownEl(f, box) {
+  const key = f.id + OWN;
+  const other = el('button', 'chip chip-other', '+ Other');
+  other.type = 'button';
+  other.setAttribute('aria-expanded', 'false');
+  const row = el('div', 'own-row');
+  row.hidden = true;
+  const inp = el('input', 'input own-input');
+  inp.type = 'text';
+  inp.maxLength = 80;
+  inp.setAttribute('aria-label', 'Your own answer: ' + f.label);
+  inp.placeholder = 'Type your own';
+  const add = el('button', 'btn btn-small', 'Add');
+  add.type = 'button';
+  row.append(inp, add);
+  const paint = () => {
+    box.querySelectorAll('.is-own').forEach(n => n.remove());
+    for (const v of ownValues(a, f.id)) {
+      const c = el('button', 'chip is-own is-selected');
+      c.type = 'button';
+      c.setAttribute('aria-pressed', 'true');
+      c.setAttribute('aria-label', v + ', your own answer. Tap to remove.');
+      c.append(el('span', null, v), el('span', 'own-x', '×'));
+      c.addEventListener('click', () => {
+        const rest = ownValues(a, f.id).filter(x => x !== v);
+        if (rest.length) a[key] = rest; else delete a[key];
+        save(); paint(); other.focus();
+      });
+      box.insertBefore(c, other);
+    }
+  };
+  box._paintOwn = paint;
+  const commit = () => {
+    const v = inp.value.trim();
+    if (!v) { inp.focus(); return; }
+    if (f.multiple) {
+      const cur = ownValues(a, f.id);
+      if (!cur.includes(v)) a[key] = [...cur, v];
+    } else {
+      a[key] = [v];
+      delete a[f.id];
+      box.querySelectorAll('[aria-pressed]').forEach(b => b._paint && b._paint());
+    }
+    inp.value = '';
+    save(); paint();
+    if (f.multiple) inp.focus();
+    else { row.hidden = true; other.setAttribute('aria-expanded', 'false'); other.focus(); }
+  };
+  add.addEventListener('click', commit);
+  inp.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault(); e.stopPropagation(); // Enter adds it, it does not move on
+    commit();
+  });
+  other.addEventListener('click', () => {
+    row.hidden = !row.hidden;
+    other.setAttribute('aria-expanded', String(!row.hidden));
+    if (!row.hidden) inp.focus();
+  });
+  box.appendChild(other);
+  paint();
+  return row;
+}
+
+/* ---------- list field: one text box per idea, plus Add another ---------- */
+function listEl(f, wrap) {
+  const rows = el('div', 'list-rows');
+  const items = () => (Array.isArray(a[f.id]) ? a[f.id].map(String) : listValues(a[f.id]));
+  const paint = (focusLast) => {
+    rows.innerHTML = '';
+    const vals = items().length ? items() : [''];
+    vals.forEach((v, i) => {
+      const r = el('div', 'list-row');
+      const inp = el('input', 'input');
+      inp.type = 'text';
+      inp.id = i === 0 ? 'f-' + f.id : `f-${f.id}-${i}`;
+      inp.value = v;
+      inp.maxLength = 200;
+      inp.setAttribute('aria-label', `${f.label} ${i + 1}`);
+      inp.addEventListener('input', () => {
+        const cur = items().length ? items() : [''];
+        cur[i] = inp.value;
+        a[f.id] = cur; save();
+      });
+      inp.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault(); e.stopPropagation(); // Enter starts the next idea
+        if (inp.value.trim()) addRow();
+      });
+      r.appendChild(inp);
+      if (vals.length > 1) {
+        const x = el('button', 'btn-remove', '×');
+        x.type = 'button';
+        x.setAttribute('aria-label', `Remove ${f.label.toLowerCase()} ${i + 1}`);
+        x.addEventListener('click', () => {
+          const cur = items();
+          cur.splice(i, 1);
+          a[f.id] = cur; save(); paint(false);
+          const left = rows.querySelectorAll('input'); // keep the place: the row that moved up, or the new last one
+          left[Math.min(i, left.length - 1)]?.focus();
+        });
+        r.appendChild(x);
+      }
+      rows.appendChild(r);
+    });
+    if (focusLast) rows.querySelector('.list-row:last-child input')?.focus();
+  };
+  const addRow = () => {
+    const cur = items().length ? items() : [''];
+    cur.push('');
+    a[f.id] = cur; save(); paint(true);
+  };
+  paint(false);
+  const more = el('button', 'btn-add', '+ ' + (f.addLabel || 'Add another'));
+  more.type = 'button';
+  more.addEventListener('click', addRow);
+  wrap.append(rows, more);
 }
 
 /* ---------- field rendering (all user text via textContent) ---------- */
@@ -162,7 +292,10 @@ function fieldEl(f) {
       box.appendChild(btn);
     }
     fs.appendChild(box);
+    if (takesOwn(f)) fs.appendChild(ownEl(f, box));
     wrap.appendChild(fs);
+  } else if (f.type === 'list') {
+    listEl(f, wrap);
   }
   const err = el('p', 'field-error');
   err.id = 'e-' + f.id;
@@ -175,8 +308,8 @@ function fieldEl(f) {
   // collapsed fields sit in a native details, open if it already has text
   const det = el('details', 'more');
   det.appendChild(el('summary', null, f.label + (f.optional ? ' (optional)' : '')));
-  if (typeof a[f.id] === 'string' && a[f.id].trim() !== '') det.open = true;
-  wrap.querySelectorAll('input, textarea').forEach(x => x.setAttribute('aria-label', f.label));
+  if (listValues(a[f.id]).length) det.open = true;
+  wrap.querySelectorAll('input, textarea').forEach(x => { if (!x.hasAttribute('aria-label')) x.setAttribute('aria-label', f.label); });
   det.appendChild(wrap);
   return det;
 }
@@ -229,6 +362,7 @@ function renderStep(step, vs) {
     const fe = fieldEl(f);
     if (fe) sec.appendChild(fe);
   }
+  if (step.showcase) sec.insertBefore(showcaseEl(step.showcase), sec.querySelector('details.more')); // above the optional detail
   if (step.id === 'limits') {
     const card = el('div', 'promise');
     card.appendChild(el('span', 'promise-icon', '🔒'));
@@ -238,6 +372,31 @@ function renderStep(step, vs) {
   root.appendChild(sec);
   root.appendChild(actionsEl(idx > 0 || fromCheck, idx >= vs.length - 2 ? 'Check answers' : 'Next', next));
   return { root, focus: h };
+}
+
+/* ---------- teach, do not ask: showcase strip and first week card ---------- */
+function showcaseEl(sc) {
+  const box = el('div', 'showcase');
+  box.appendChild(el('p', 'showcase-title', sc.title));
+  const gal = el('div', 'kit-gallery');
+  for (const it of sc.items) {
+    const c = el('div', 'card is-static');
+    c.appendChild(el('span', 'card-icon', it.icon));
+    c.appendChild(el('span', 'card-title', it.title));
+    c.appendChild(el('span', 'card-line', it.line));
+    gal.appendChild(c);
+  }
+  box.appendChild(gal);
+  if (sc.foot) box.appendChild(el('p', 'showcase-foot', sc.foot));
+  return box;
+}
+function firstWeekEl(lines) {
+  const box = el('div', 'first-week');
+  box.appendChild(el('h3', 'kit-title', 'Your first week: try saying'));
+  const ul = el('ul');
+  for (const x of lines) ul.appendChild(el('li', null, '"' + x + '"'));
+  box.appendChild(ul);
+  return box;
 }
 
 /* ---------- check screen ---------- */
@@ -257,13 +416,13 @@ function summarySection(step) {
   const dl = el('dl');
   for (const f of step.fields) {
     if (f.when && !f.when(a)) continue;
-    const v = a[f.id];
-    const empty = Array.isArray(v) ? v.length === 0 : v === undefined || v === null || v === '';
+    const v = f.type === 'list' ? listValues(a[f.id]) : a[f.id];
+    const own = takesOwn(f) ? ownValues(a, f.id) : [];
+    const empty = own.length === 0 && (Array.isArray(v) ? v.length === 0 : v === undefined || v === null || v === '');
     if (empty && (f.optional || f.collapsed)) continue; // empty more.* never shows
     dl.appendChild(el('dt', null, f.label));
     let text = empty ? 'Not answered'
-      : Array.isArray(v) ? v.map(x => titleFor(f, x)).join(', ')
-      : String(v);
+      : [...asArray(v).map(x => titleFor(f, x)), ...own].join(', ');
     if (f.type === 'textarea') { const cut = text.split('\n')[0]; if (cut.length < text.length) text = cut + '...'; }
     dl.appendChild(el('dd', null, text));
   }
@@ -343,10 +502,17 @@ function renderCheck(vs) {
   sec.appendChild(sum);
 
   const picked = SKILLS.filter(s => asArray(a.skills).includes(s.id) && s.groups.some(g => asArray(a.groups).includes(g)));
-  if (picked.length) {
+  const swaps = vs.some(s => s.id === 'swaps') ? SWAPS.filter(w => asArray(a.swaps).includes(w.id) && swapChoices(a).includes(w)) : [];
+  if (swaps.length) {
+    const total = swaps.reduce((t, w) => t + w.nzd, 0);
+    sec.appendChild(el('p', 'kit-note', `The apps you picked cost about NZ$${total} a year. Your assistant does those jobs in one place.`));
+  }
+  const mine = vs.some(s => s.id === 'skills') ? listValues(a['own.skills']) : [];
+  const kit = [...picked, ...mine.map(t => ({ icon: '✨', title: t, line: 'Your own idea' }))];
+  if (kit.length) {
     sec.appendChild(el('h3', 'kit-title', 'Your starter kit'));
     const gal = el('div', 'kit-gallery');
-    for (const s of picked) {
+    for (const s of kit) {
       const c = el('div', 'card is-static');
       if (s.icon) c.appendChild(el('span', 'card-icon', s.icon));
       c.appendChild(el('span', 'card-title', s.title));
@@ -354,6 +520,8 @@ function renderCheck(vs) {
       gal.appendChild(c);
     }
     sec.appendChild(gal);
+    sec.appendChild(firstWeekEl(buildBrief(a).firstWeek));
+    sec.appendChild(el('p', 'kit-note', GROWS));
   }
 
   honeyInput = el('input', 'honeypot'); // bots fill it, people never see it
@@ -378,10 +546,13 @@ function renderDone() {
   h.tabIndex = -1;
   sec.appendChild(h);
   sec.appendChild(el('p', 'screen-lead', 'Josh will be in touch within 2 days.'));
+  if (doneTries.length) sec.appendChild(firstWeekEl(doneTries));
+  sec.appendChild(el('p', 'kit-note', GROWS));
   return { root: sec, focus: h };
 }
 function finishDone() { // shared by a real success and the honeypot's fake one
   doneName = String(a.name || '').trim().split(/\s+/)[0] || 'friend'; // keep the first name for the done screen
+  try { doneTries = buildBrief(a).firstWeek; } catch (e) { doneTries = []; } // kept before the answers clear
   try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
   a = {};
   sending = false;
@@ -511,6 +682,7 @@ function next() {
     paintErrors(wizardEl.querySelector('.step-view') || wizardEl, step);
     return;
   }
+  if (step.id === 'swaps') { a.skills = applySwaps(a); save(); } // picked apps tick their skills
   if (fromCheck) { fromCheck = false; gateToCheck(); return; } // an edit re-checks everything first
   if (i >= 0 && i < vs.length - 1) { stepId = vs[i + 1].id; render(); }
   else gateToCheck(); // the last question step lands on check only when all is valid

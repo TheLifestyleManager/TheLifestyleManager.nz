@@ -11,8 +11,11 @@
 // keep their answered shape: strings stay strings, arrays stay arrays, and
 // briefText is the one place arrays are joined for reading.
 
-import { GROUPS, SKILLS, TOOLS, APPS } from './catalogue.js';
-import { STEPS, visibleSteps } from './steps.js';
+import { GROUPS, SKILLS, TOOLS, APPS, SWAPS, TRY } from './catalogue.js';
+import { STEPS, visibleSteps, OWN, ownValues, listValues, swapChoices, takesOwn } from './steps.js';
+// Round 4: own answers (<fieldId>.own) merge in wherever their field is read:
+// multi-pick fields get them appended, single-pick fields use theirs first.
+// Own skills (own.skills) get a channel each. delivery says how it sends things.
 
 const TONE_LABELS = {
   warm: 'Warm and friendly',
@@ -20,6 +23,20 @@ const TONE_LABELS = {
   cheeky: 'Fun and cheeky',
   calm: 'Calm and formal',
 };
+
+// Round 4: Hermes only makes files when told to, so every box gets this rule.
+export const FILES_RULE = 'Text by default. For quotes, invoices, reports, and money or customer numbers, send a PDF, chart or spreadsheet, or whenever asked.';
+const SAVE_SKILL = 'That worked. Save it as a skill.';
+
+// "Your first week": up to 5 things to try, from the active skills and own
+// ideas, always ending with how to make a new skill. Hermes opens with these.
+export function firstWeek(skills, ownSkills) {
+  const lines = [
+    ...skills.map(s => TRY[s.id]).filter(Boolean),
+    ...ownSkills.map(o => `Help me set up: ${o.title}`),
+  ].slice(0, 5);
+  return [...lines, SAVE_SKILL];
+}
 
 const ALWAYS_DEFAULTS = [
   'Always ask you first if it is unsure.',
@@ -50,6 +67,15 @@ const TECH_ADVANCED_DEFAULTS = {
 
 function arr(v) {
   return Array.isArray(v) ? v.filter(Boolean) : (v ? [v] : []);
+}
+
+// A multi-pick answer with the visitor's own answers added on the end.
+function many(answers, id) {
+  return [...arr(answers[id]), ...ownValues(answers, id)];
+}
+// A single-pick answer: their own answer wins, the preset otherwise.
+function one(answers, id) {
+  return ownValues(answers, id)[0] || answers[id];
 }
 
 function slugify(s) {
@@ -118,7 +144,7 @@ function collectNotes(answers, visible) {
 function collectTech(answers) {
   const tech = {};
   for (const id of TECH_FIELDS) {
-    const v = answers[id];
+    const v = id === 'extras' ? many(answers, id) : answers[id];
     if (Array.isArray(v) && v.length) tech[id] = v.join(', ');
     else if (typeof v === 'string' && v.trim()) tech[id] = v.trim();
   }
@@ -137,7 +163,7 @@ export function buildBrief(a) {
   const shown = (id) => visible.has(id);
   const groups = arr(answers.groups).filter(g => GROUPS.some(x => x.id === g));
   const skills = activeSkills(answers, groups);
-  const tools = arr(answers.tools);
+  const tools = many(answers, 'tools');
   const notes = collectNotes(answers, visible);
   const tech = shown('tech') ? collectTech(answers) : {};
 
@@ -150,6 +176,15 @@ export function buildBrief(a) {
   for (const s of skills) {
     if (!channels.includes(s.channel)) channels.push(s.channel);
   }
+  // Own skill ideas: one entry and one channel each, named from the first words.
+  const ownSkills = [];
+  for (const title of shown('skills') ? listValues(answers['own.skills']) : []) {
+    const base = 'own-' + slugify(title.split(/\s+/).slice(0, 3).join(' ')).slice(0, 24).replace(/-+$/, '');
+    let channel = base;
+    for (let i = 2; channels.includes(channel); i++) channel = `${base}-${i}`;
+    channels.push(channel);
+    ownSkills.push({ title, channel });
+  }
 
   // Discord categories, grouped by skill.category, Hermes first.
   const categories = [{ name: 'Hermes', channels: ['hermes', 'needs-you', 'alerts'] }];
@@ -158,14 +193,15 @@ export function buildBrief(a) {
     if (!cat) { cat = { name: s.category, channels: [] }; categories.push(cat); }
     if (!cat.channels.includes(s.channel)) cat.channels.push(s.channel);
   }
+  if (ownSkills.length) categories.push({ name: 'Your own', channels: ownSkills.map(o => o.channel) });
 
   // soul.who: name, region, household or team, from visible steps only.
   const whoBits = [];
   if (answers.name) whoBits.push(String(answers.name).trim());
   if (answers.region) whoBits.push(`${String(answers.region).trim()} area`);
-  const household = shown('personal') ? arr(answers.household) : [];
+  const household = shown('personal') ? many(answers, 'household') : [];
   if (household.length) whoBits.push(`Household: ${household.join(', ')}`);
-  if (shown('business') && answers.team) whoBits.push(`Team size: ${answers.team}`);
+  if (shown('business') && one(answers, 'team')) whoBits.push(`Team size: ${one(answers, 'team')}`);
   if (answers.users) whoBits.push(`People using it: ${userInfo.label}`);
   const who = whoBits.length ? whoBits.join('. ') + '.' : 'Not given.';
 
@@ -178,12 +214,11 @@ export function buildBrief(a) {
   if (bizName) bizBits.push(`Business: ${bizName}`);
   if (shown('business') && answers.bizdoes) bizBits.push(`What it does: ${answers.bizdoes}`);
   if (shown('newbiz') && answers.idea) bizBits.push(`New venture idea: ${answers.idea}`);
-  if (shown('newbiz') && answers.stage) bizBits.push(`Stage: ${answers.stage}`);
+  if (shown('newbiz') && one(answers, 'stage')) bizBits.push(`Stage: ${one(answers, 'stage')}`);
   if (shown('projects') && answers.project) bizBits.push(`Project: ${answers.project}`);
-  if (shown('projects') && answers.goal) bizBits.push(`Definition of done: ${answers.goal}`);
-  if (shown('personal') && Array.isArray(answers.busiest) && answers.busiest.length) {
-    bizBits.push(`Busiest parts of life: ${answers.busiest.join(', ')}`);
-  }
+  if (shown('projects') && one(answers, 'goal')) bizBits.push(`Definition of done: ${one(answers, 'goal')}`);
+  const busiest = shown('personal') ? many(answers, 'busiest') : [];
+  if (busiest.length) bizBits.push(`Busiest parts of life: ${busiest.join(', ')}`);
   const business = bizBits.length ? bizBits.join('. ') + '.' : 'Personal use, no business given.';
 
   const tone = TONE_LABELS[answers.tone] || (answers.tone ? String(answers.tone) : 'Warm and friendly');
@@ -201,12 +236,19 @@ export function buildBrief(a) {
     const settings = {};
     for (const q of s.ask || []) {
       const key = `skill.${s.id}.${q.id}`;
-      const v = answers[key];
+      const own = ownValues(answers, key);
+      const v = !own.length ? answers[key] : q.multiple ? [...arr(answers[key]), ...own] : own[0];
       const empty = v === undefined || v === '' || (Array.isArray(v) && !v.length);
       if (!empty) settings[q.id] = v;
     }
     return { id: s.id, title: s.title, outward: !!s.outward, channel: s.channel, settings };
   });
+
+  // Paid apps it could replace, and the typical yearly cost of the picked ones.
+  const fitting = shown('swaps') ? swapChoices(answers) : [];
+  const replaces = fitting.filter(w => arr(answers.swaps).includes(w.id))
+    .map(w => ({ id: w.id, title: w.title, examples: w.examples, nzd: w.nzd, fit: w.fit, note: w.note }));
+  const otherApps = shown('swaps') ? listValues(answers['own.swaps']) : [];
 
   const heavyOn = skills.some(s => s.heavy);
   const vm = {
@@ -238,19 +280,27 @@ export function buildBrief(a) {
       who,
       business,
       tone,
-      always: ['Ask before sending, posting or paying anything', ...ALWAYS_DEFAULTS],
+      always: ['Ask before sending, posting or paying anything', FILES_RULE, ...ALWAYS_DEFAULTS],
       never,
     },
     jobs,
+    ownSkills,
+    firstWeek: firstWeek(skills, ownSkills),
+    replaces,
+    replacesNzd: replaces.reduce((t, w) => t + w.nzd, 0),
+    otherApps,
     tools,
     notes,
     tech,
     vm,
     // raw answers, but only fields on the screens they actually saw
     answers: Object.fromEntries(visibleSteps(answers)
-      .flatMap(st => st.fields.map(f => f.id))
-      .filter(id => answers[id] !== undefined && answers[id] !== '')
-      .map(id => [id, answers[id]])),
+      .flatMap(st => st.fields.flatMap(f => {
+        const pairs = answers[f.id] !== undefined && answers[f.id] !== '' ? [[f.id, answers[f.id]]] : [];
+        const own = takesOwn(f) ? ownValues(answers, f.id) : []; // own answers only where the field takes them
+        if (own.length) pairs.push([f.id + OWN, own]);
+        return pairs;
+      }))),
   };
 }
 
@@ -297,6 +347,22 @@ export function briefText(brief) {
   if (!(b.jobs || []).length) push('- None picked yet.');
   push();
 
+  if ((b.ownSkills || []).length) {
+    push('THEIR OWN SKILL IDEAS');
+    for (const o of b.ownSkills) push(`- ${o.title} (channel: ${o.channel})`);
+    push();
+  }
+
+  if ((b.replaces || []).length || (b.otherApps || []).length) {
+    push('APPS IT COULD REPLACE');
+    for (const w of b.replaces || []) {
+      push(`- ${w.title} (like ${w.examples}), about NZ$${w.nzd} a year. ${w.fit === 'full' ? 'Does the whole job.' : 'Does most of it: ' + w.note}`);
+    }
+    for (const x of b.otherApps || []) push(`- Other: ${x}`);
+    if (b.replacesNzd) push(`Typical cost of the picked apps: about NZ$${b.replacesNzd} a year`);
+    push();
+  }
+
   push('TOOLS YOU ALREADY USE');
   push((b.tools || []).map(tTitle).join(', ') || 'None given');
   push();
@@ -328,6 +394,10 @@ export function briefText(brief) {
     }
     push();
   }
+
+  push('FIRST WEEK: THINGS TO TRY SAYING (Hermes sends these as its welcome)');
+  for (const x of arr(b.firstWeek)) push(`- "${x}"`);
+  push();
 
   push('YOUR MACHINE');
   push(b.vm?.fits ? 'All picks fit a small box.' : 'Some picks are heavy, we may size the box up.');

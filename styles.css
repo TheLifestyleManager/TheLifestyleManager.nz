@@ -905,3 +905,122 @@ button.card[aria-pressed="true"] .card-badge {
 
 fieldset.field-group { border: 0; margin: 0; padding: 0; min-width: 0; }
 fieldset.field-group > legend.field-label { padding: 0; margin-bottom: 8px; }
+
+/* Round 4: own answers (Other chip), the own-skill list, the kit note */
+.chip.is-own {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(192, 160, 112, 0.16), rgba(192, 160, 112, 0.08));
+  box-shadow: 0 0 0 1px var(--accent);
+  font-weight: 600;
+}
+
+.own-x {
+  color: var(--accent-deep);
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+.chip-other {
+  border-style: dashed;
+  color: var(--ink-2);
+}
+
+.own-row,
+.list-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.own-row[hidden] {
+  display: none;
+}
+
+.own-row .input,
+.list-row .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-small {
+  min-height: 48px;
+  padding: 0 18px;
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.btn-remove,
+.btn-add {
+  font: inherit;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.btn-remove {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.btn-add {
+  margin-top: 12px;
+  min-height: 44px;
+  padding: 8px 18px;
+  border-style: dashed;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+@media (hover: hover) {
+  .btn-remove:hover,
+  .btn-add:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+}
+
+.kit-note {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  background: var(--accent-soft);
+  border-radius: 12px;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+
+/* Round 4: showcase strip (shown, not asked) and the first week card */
+.showcase {
+  margin: 28px 0 8px;
+}
+
+.showcase-title {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.showcase-foot {
+  margin: 12px 0 0;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+
+.first-week ul {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+  color: var(--ink-2);
+}
+
+.first-week li {
+  margin: 4px 0;
+}

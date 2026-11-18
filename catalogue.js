@@ -85,7 +85,7 @@ export const SKILLS = [
     outward: false, heavy: false, category: 'Daily', channel: 'habit-check', popular: false,
     ask: [
       { id: 'habits', label: 'Which habits?', type: 'chips', multiple: true, options: ['Exercise', 'Read more', 'Write it down', 'Less screen time'] },
-      { id: 'time', label: 'Check in at what time?', type: 'chips', options: ['7am', '12pm', '6pm', '9pm'] },
+      { id: 'time', label: 'Check in at what times?', type: 'chips', multiple: true, options: ['7am', '12pm', '6pm', '9pm'] },
       { id: 'style', label: 'What style of nudge?', type: 'chips', options: ['Cheerful', 'Tough love', 'Quiet'] },
     ],
   },
@@ -292,6 +292,7 @@ export const SKILLS = [
     icon: '🧮', groups: ['business'], tools: ['xero', 'myob', 'bank', 'sheets'],
     outward: false, heavy: false, category: 'Money', channel: 'bookkeeping-help', popular: false,
     ask: [
+      { id: 'format', label: 'How should the numbers come?', type: 'chips', options: ['Quick summary', 'Summary plus a chart', 'Full PDF report'] },
       { id: 'truth', label: 'Which is the source of truth?', type: 'chips', options: ['Xero', 'MYOB', 'My sheet', 'The bank'] },
       { id: 'mismatch', label: 'When things mismatch, should it?', type: 'chips', options: ['Just flag it', 'Fix the small ones', 'Fix and log it'] },
     ],
@@ -302,6 +303,7 @@ export const SKILLS = [
     icon: '📊', groups: ['business', 'newbiz'], tools: ['square', 'xero', 'gmail', 'sheets'],
     outward: false, heavy: false, category: 'Business', channel: 'daily-ops-brief', popular: false,
     ask: [
+      { id: 'format', label: 'How should the numbers come?', type: 'chips', options: ['Quick summary', 'Summary plus a chart', 'Full PDF report'] },
       { id: 'numbers', label: 'Which numbers matter most?', type: 'chips', multiple: true, options: ['Sales', 'Cash', 'Jobs booked', 'Open quotes'] },
       { id: 'time', label: 'What time each morning?', type: 'chips', options: ['6am', '7am', '8am'] },
     ],
@@ -420,6 +422,106 @@ export const SKILLS = [
     outward: false, heavy: false, category: 'Projects', channel: 'resume-maker', popular: false,
     ask: [],
   },
+  // ---- Round 4: skills that stand in for paid apps (see SWAPS) ----
+  {
+    id: 'cycle-tracker', title: 'Cycle tracker',
+    line: 'Log your cycle by chat and get a heads up.',
+    icon: '🌸', groups: ['personal'], tools: ['none'],
+    outward: false, heavy: false, category: 'Health', channel: 'cycle', popular: false,
+    ask: [
+      { id: 'remind', label: 'What should it remind you about?', type: 'chips', multiple: true, options: ['Period due', 'Fertile window', 'PMS days', 'Pill reminder'] },
+      { id: 'history', label: 'Bring your history across?', type: 'chips', options: ['Yes, I can export it', 'Start fresh'] },
+    ],
+  },
+  {
+    id: 'workout-log', title: 'Workout log',
+    line: 'Log sets and runs by chat. It tracks your progress.',
+    icon: '💪', groups: ['personal', 'projects'], tools: ['none'],
+    outward: false, heavy: false, category: 'Health', channel: 'workouts', popular: false,
+    ask: [
+      { id: 'kind', label: 'What do you train?', type: 'chips', multiple: true, options: ['Gym', 'Running', 'Home workouts', 'Sport'] },
+      { id: 'history', label: 'Bring your history across?', type: 'chips', options: ['Yes, I can export it', 'Start fresh'] },
+    ],
+  },
+  {
+    id: 'journal', title: 'Journal and mood diary',
+    line: 'A gentle evening prompt. Your entries stay private.',
+    icon: '📓', groups: ['personal'], tools: ['none'],
+    outward: false, heavy: false, category: 'Health', channel: 'journal', popular: false,
+    ask: [
+      { id: 'time', label: 'Evening prompt at what time?', type: 'chips', options: ['8pm', '9pm', '10pm'] },
+      { id: 'style', label: 'What kind of journal?', type: 'chips', options: ['A few questions', 'Free writing', 'Mood score only'] },
+    ],
+  },
+  {
+    id: 'meds-reminders', title: 'Medication reminders',
+    line: 'Reminds you to take meds and warns when you run low.',
+    icon: '💊', groups: ['personal'], tools: ['none'],
+    outward: false, heavy: false, category: 'Health', channel: 'meds', popular: false,
+    ask: [
+      { id: 'times', label: 'When are they due?', type: 'chips', multiple: true, options: ['Morning', 'Midday', 'Evening', 'Bedtime'] },
+      { id: 'who', label: 'Who are they for?', type: 'chips', multiple: true, options: ['Me', 'Kids', 'Partner', 'Elder parents'] },
+    ],
+  },
+  {
+    id: 'food-diary', title: 'Food diary',
+    line: 'Snap or text your meals. It keeps a simple daily tally.',
+    icon: '🍎', groups: ['personal'], tools: ['none'],
+    outward: false, heavy: false, category: 'Health', channel: 'food-diary', popular: false,
+    ask: [
+      { id: 'goal', label: 'What is the goal?', type: 'chips', multiple: true, options: ['Eat better', 'Lose weight', 'Build muscle', 'Spot food triggers'] },
+      { id: 'counts', label: 'What should it count?', type: 'chips', options: ['Calories', 'Protein', 'No numbers, just notes'] },
+    ],
+  },
+  {
+    id: 'chores', title: 'Chores and pocket money',
+    line: 'Runs the chore roster and keeps a pocket money ledger.',
+    icon: '🧹', groups: ['personal'], tools: ['none'],
+    outward: false, heavy: false, category: 'Home', channel: 'chores', popular: false,
+    ask: [
+      { id: 'kids', label: 'How many kids?', type: 'chips', options: ['1', '2', '3', '4 or more'] },
+      { id: 'payday', label: 'Pocket money day?', type: 'chips', options: ['Weekly', 'Fortnightly', 'Monthly', 'No pocket money'] },
+    ],
+  },
+  {
+    id: 'kids-memories', title: 'Kids memory book',
+    line: 'Send milestones and photos. It files them by age.',
+    icon: '🧸', groups: ['personal'], tools: ['gdrive'],
+    outward: false, heavy: true, category: 'Home', channel: 'kids-memories', popular: false,
+    ask: [
+      { id: 'kids', label: 'How many kids?', type: 'chips', options: ['1', '2', '3', '4 or more'] },
+      { id: 'prompt', label: 'How often should it ask for updates?', type: 'chips', options: ['Weekly', 'Monthly', 'Only when I send'] },
+    ],
+  },
+  {
+    id: 'home-upkeep', title: 'Home upkeep reminders',
+    line: 'Seasonal jobs, WOF and rego, filters and alarms, on time.',
+    icon: '🔧', groups: ['personal'], tools: ['none'],
+    outward: false, heavy: false, category: 'Home', channel: 'home-upkeep', popular: false,
+    ask: [
+      { id: 'track', label: 'What should it track?', type: 'chips', multiple: true, options: ['Car WOF and rego', 'Smoke alarms', 'Heat pump service', 'Gutters', 'Garden jobs'] },
+      { id: 'home', label: 'Do you own or rent?', type: 'chips', options: ['Own', 'Rent'] },
+    ],
+  },
+  {
+    id: 'task-list', title: 'To-do list by chat',
+    line: 'Add tasks by text or voice. It nudges you when due.',
+    icon: '✅', groups: ['personal', 'business', 'newbiz', 'projects'], tools: ['none'],
+    outward: false, heavy: false, category: 'Daily', channel: 'to-do', popular: false,
+    ask: [
+      { id: 'review', label: 'When should it show your list?', type: 'chips', multiple: true, options: ['Each morning', 'Each evening', 'Weekly'] },
+    ],
+  },
+  {
+    id: 'writing-helper', title: 'Writing helper',
+    line: 'Checks and tidies your writing, in your own voice.',
+    icon: '✍️', groups: ['personal', 'business', 'projects'], tools: ['none'],
+    outward: false, heavy: false, category: 'Projects', channel: 'writing', popular: false,
+    ask: [
+      { id: 'english', label: 'Which English?', type: 'chips', options: ['NZ English', 'UK English', 'US English'] },
+      { id: 'for', label: 'What do you write most?', type: 'chips', multiple: true, options: ['Emails', 'Work docs', 'Study', 'Social posts'] },
+    ],
+  },
 ];
 
 export const APPS = [
@@ -430,3 +532,83 @@ export const APPS = [
   { id: 'web', title: 'A private web app', line: 'Coming soon.', icon: '🖥️', soon: true },
   { id: 'unsure', title: 'Not sure, help me pick', line: 'Answer a few things and we choose for you.', icon: '🤔' },
 ];
+
+// Round 4: paid apps it could replace. Prices from research/swaps (19 Nov 2026),
+// checked by a blind second pass. nzd is a typical yearly price, rounded;
+// USD prices converted at 1.82 (open.er-api.com, 18 Nov 2026).
+// ponytail: fixed rate and typical prices, refresh with the research when prices move.
+// fit: 'full' does the whole job by chat, 'part' does most of it (see note).
+export const SWAPS = [
+  { id: 'cycle', title: 'Period tracker', icon: '🌸', examples: 'Flo', nzd: 75, skills: ['cycle-tracker'], fit: 'part', note: 'no phone or watch sensor data, and it is not medical advice.' },
+  { id: 'habits', title: 'Habit tracker', icon: '🔁', examples: 'Habitify', nzd: 55, skills: ['habit-check'], fit: 'part', note: 'no home screen widget or streak charts on the phone.' },
+  { id: 'workouts', title: 'Workout log', icon: '💪', examples: 'Hevy', nzd: 45, skills: ['workout-log'], fit: 'part', note: 'no GPS for runs and no watch sync.' },
+  { id: 'journal', title: 'Journal app', icon: '📓', examples: 'Day One', nzd: 90, skills: ['journal'], fit: 'full' },
+  { id: 'meds', title: 'Medication reminders', icon: '💊', examples: 'Medisafe', nzd: 75, skills: ['meds-reminders'], fit: 'part', note: 'it cannot see if a dose was taken, and has no pharmacy link.' },
+  { id: 'food', title: 'Calorie counter', icon: '🍎', examples: 'MyFitnessPal', nzd: 135, skills: ['food-diary'], fit: 'part', note: 'no barcode scanner, and counts from photos are estimates.' },
+  { id: 'budget', title: 'Budget app', icon: '💰', examples: 'YNAB or PocketSmith', nzd: 200, skills: ['budget-helper'], fit: 'part', note: 'no live bank feeds. You send it a bank CSV or tell it.' },
+  { id: 'meals', title: 'Meal planner', icon: '🥗', examples: 'Plan to Eat', nzd: 90, skills: ['meal-planner'], fit: 'part', note: 'no cook mode screen or pantry barcode scanning.' },
+  { id: 'family', title: 'Family organiser', icon: '🏠', examples: 'Cozi or Oona', nzd: 60, skills: ['family-calendar'], fit: 'part', note: 'not a wall calendar everyone looks at, and no location sharing.' },
+  { id: 'kids', title: 'Baby and kids journal', icon: '🧸', examples: 'Tinybeans or Huckleberry', nzd: 130, skills: ['kids-memories'], fit: 'part', note: 'no shared feed for grandparents and no printed book.' },
+  { id: 'home', title: 'Home maintenance app', icon: '🔧', examples: 'HomeZada', nzd: 215, skills: ['home-upkeep'], fit: 'full' },
+  { id: 'todo', title: 'To-do app', icon: '✅', examples: 'Todoist or TickTick', nzd: 100, skills: ['task-list'], fit: 'full' },
+  { id: 'notes', title: 'Notes app', icon: '🗂️', examples: 'Notion', nzd: 220, skills: ['second-brain'], fit: 'part', note: 'no shared pages or databases for a team.' },
+  { id: 'news', title: 'News reader', icon: '🔎', examples: 'Feedly', nzd: 130, skills: ['research-digest'], fit: 'full' },
+  { id: 'transcribe', title: 'Transcription app', icon: '🎙️', examples: 'Otter', nzd: 180, skills: ['voice-notes'], fit: 'part', note: 'it transcribes recordings you send. It does not join your calls.' },
+  { id: 'resume', title: 'Resume builder', icon: '🪪', examples: 'Zety', nzd: 130, skills: ['resume-maker'], fit: 'full' },
+  { id: 'grammar', title: 'Grammar checker', icon: '✍️', examples: 'Grammarly', nzd: 260, skills: ['writing-helper'], fit: 'part', note: 'it checks text you send. It does not sit inside your keyboard or Word.' },
+];
+
+// Round 4: one thing to try saying, per skill. Shown on the last screens as
+// "Your first week", and sent in the brief so Hermes can open with it.
+export const TRY = {
+  'morning-brief': 'What is on today, and what can wait?',
+  'inbox-triage': 'Anything in my inbox that needs me today?',
+  'night-recap': 'Wrap up today and line up tomorrow.',
+  'phone-brief': 'Ring me at 7 tomorrow with my day.',
+  'habit-check': 'How is my exercise streak going this week?',
+  'group-digest': 'What did I miss in the family chat?',
+  'keep-in-touch': 'Who have I not caught up with in a while?',
+  'founder-boss': 'What are my three jobs today?',
+  'voice-notes': 'Send it a voice note and say: tidy this up.',
+  'learns-from-mistakes': 'That was wrong. Remember how to do it next time.',
+  'second-brain': 'What was that cafe Sam told me about?',
+  'research-digest': 'Add this website to my daily digest.',
+  'study-helper': 'Quiz me on chapter three.',
+  'family-calendar': 'What is on for the kids this week?',
+  'schedule-help': 'Find a time for a haircut next week.',
+  'meal-planner': 'Plan dinners for the week and make the shopping list.',
+  'budget-helper': "Send me this month's spending as a chart.",
+  'travel-watch': 'Tell me if Auckland to Queenstown drops under $150.',
+  'parcel-track': 'When does my parcel arrive?',
+  'seat-hunter': 'Watch for two tickets to this show and ask me first.',
+  'guest-calls': 'Call everyone on the guest list to confirm.',
+  'family-docs': 'Send a photo of a letter and say: file this.',
+  'kid-profile': 'Set up homework help for my son, no games after 8.',
+  'trades-desk': 'Quote the Smith job: two days, plus materials.',
+  'quote-maker': 'Quote $800 for a deck clean, as a PDF.',
+  'invoice-drafter': 'Invoice the Brown job, send me the PDF to check.',
+  'bookkeeping': 'Which payments do not match an invoice?',
+  'ops-brief': "Show me last week's sales as a chart.",
+  'office-docs': 'Turn this into a tidy Word document.',
+  'idea-validator': 'Is there a market for my idea? Give me a short report.',
+  'meeting-prep': 'Brief me on this company before my 2pm.',
+  'lead-desk': 'Any new leads today?',
+  'helpdesk': 'Show me the questions you could not answer.',
+  'outreach-queue': 'Draft messages to five cafes in town. I will check them.',
+  'launch-kit': 'Turn this post into a caption and a newsletter item.',
+  'content-pipeline': 'What is on the content calendar this week?',
+  'video-edits': 'Cut this video to 30 seconds.',
+  'overnight-builder': 'While I sleep, build a first draft of this.',
+  'code-partner': 'Fix the bug in the sign up form.',
+  'resume-maker': 'Fit my resume to this job ad, as a PDF.',
+  'cycle-tracker': 'My period started today.',
+  'workout-log': 'Squats 3 sets of 8 at 60kg.',
+  'journal': 'Ask me tonight how the day went.',
+  'meds-reminders': 'Remind me to take my pill at 8am.',
+  'food-diary': 'Send a photo of lunch and say: log this.',
+  'chores': 'Whose turn is it for the dishes?',
+  'kids-memories': 'Send a photo and say: first steps today.',
+  'home-upkeep': 'When is the car WOF due?',
+  'task-list': 'Add: book the dentist, by Friday.',
+  'writing-helper': 'Tidy up this email before I send it.',
+};
