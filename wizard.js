@@ -4,7 +4,7 @@ import { GROUPS, SKILLS, TOOLS, APPS } from './catalogue.js';
 import { visibleSteps, validate } from './steps.js';
 import { buildBrief, briefText } from './brief.js';
 
-const ALIAS = 'REPLACE_ME'; // FormSubmit alias for new briefs (set before launch)
+const ALIAS = 'josh@parkup.nz'; // FormSubmit target (activated 18 Nov 2026); can swap for the random alias later
 const CONTACT_EMAIL = 'josh@parkup.nz'; // public email shown in the send fallback
 const KEY = 'tlm-wizard-v1';
 const PRIVACY = 'Only Josh and Farley read your answers. They reach us by email through FormSubmit, which keeps a copy for up to 30 days. Ask any time and we delete them.';
