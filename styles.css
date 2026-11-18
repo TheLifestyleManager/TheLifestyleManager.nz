@@ -1662,3 +1662,81 @@ button.card[aria-pressed="true"] .card-badge {
   font-size: 1.45em;
   line-height: 0.75;
 }
+
+/* Balanced tile grids. The visible counts change with each visitor's picks, so the last tile
+   fills what is left of its row: never a lone tile. Exactly 2 or 4 tiles sit as a 2 by 2. */
+.cards > :last-child:nth-child(odd),
+.kit-gallery > :last-child:nth-child(odd) {
+  grid-column: 1 / -1; /* phones: 2 columns */
+}
+
+@media (min-width: 720px) {
+  .cards > :last-child:nth-child(odd),
+  .kit-gallery > :last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .cards > :last-child:nth-child(3n + 1),
+  .kit-gallery > :last-child:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+  }
+
+  .cards > :last-child:nth-child(3n + 2),
+  .kit-gallery > :last-child:nth-child(3n + 2) {
+    grid-column: span 2;
+  }
+
+  .cards:has(> :nth-child(2):last-child),
+  .cards:has(> :nth-child(4):last-child),
+  .kit-gallery:has(> :nth-child(2):last-child),
+  .kit-gallery:has(> :nth-child(4):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cards:has(> :nth-child(4):last-child) > :last-child,
+  .kit-gallery:has(> :nth-child(4):last-child) > :last-child {
+    grid-column: auto;
+  }
+}
+
+.cards.is-list > :last-child {
+  grid-column: auto;
+}
+
+/* "Add your own": dashed, centred, clearly not a pick */
+.card.card-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-style: dashed;
+  border-color: var(--border-strong);
+  background: transparent;
+  box-shadow: none;
+}
+
+.card-add .card-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--muted);
+  color: var(--ink-2);
+  font-size: 1.2rem;
+}
+
+.cards.is-list .card.card-add {
+  display: grid;
+  text-align: left;
+}
+
+/* The tile opens this list, so its own "Add your own..." line is hidden (no double up) */
+details.more.by-tile > summary {
+  display: none;
+}
+
+details.more.by-tile > :not(summary) {
+  padding-left: 0;
+}

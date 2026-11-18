@@ -251,6 +251,24 @@ function listEl(f, wrap) {
 }
 
 /* ---------- field rendering (all user text via textContent) ---------- */
+// The last tile on the skills and apps grids: not a pick, it opens the "add your own" box below.
+// The visible counts change with each visitor's groups, so this keeps every last row full.
+function addOwnCard(listId) {
+  const b = el('button', 'card card-add');
+  b.type = 'button';
+  b.appendChild(el('span', 'card-icon', '＋'));
+  b.appendChild(el('span', 'card-title', 'Add your own'));
+  b.appendChild(el('span', 'card-line', 'Not here? Add it in your own words.'));
+  b.addEventListener('click', () => {
+    const inp = document.getElementById('f-' + listId);
+    if (!inp) return;
+    const det = inp.closest('details');
+    if (det) det.open = true;
+    inp.scrollIntoView({ block: 'center', behavior: REDUCED.matches ? 'auto' : 'smooth' });
+    inp.focus({ preventScroll: true });
+  });
+  return b;
+}
 function cardEl(opt) {
   const card = el('button', 'card');
   card.type = 'button';
@@ -319,6 +337,8 @@ function fieldEl(f) {
       selectHandlers(btn, f, opt);
       box.appendChild(btn);
     }
+    const ownList = f.type === 'cards' && { skills: 'own.skills', swaps: 'own.swaps' }[f.source];
+    if (ownList) box.appendChild(addOwnCard(ownList)); // CSS stretches it to finish the last row
     fs.appendChild(box);
     if (takesOwn(f)) fs.appendChild(ownEl(f, box));
     wrap.appendChild(fs);
@@ -389,6 +409,8 @@ function renderStep(step, vs) {
     const fe = fieldEl(f);
     if (fe) sec.appendChild(fe);
   }
+  // The "Add your own" tile replaces the separate disclosure line for the own-entry list, so it never doubles up
+  if (sec.querySelector('.card-add')) sec.querySelectorAll('details.more').forEach(d => { if (d.querySelector('[id^="f-own."]')) d.classList.add('by-tile'); });
   if (step.showcase) sec.insertBefore(showcaseEl(step.showcase), sec.querySelector('details.more')); // above the optional detail
   if (step.id === 'limits') {
     const card = el('div', 'promise');
