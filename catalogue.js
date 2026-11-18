@@ -478,13 +478,13 @@ export const SKILLS = [
   {
     // Joins up the other health logs. reads: the skills whose logs it compares (only the picked ones reach the brief).
     id: 'pattern-spotter', title: 'Health pattern spotter',
-    line: 'Joins up your health logs, spots patterns, suggests small tweaks.',
+    line: 'Joins up food, exercise, sleep and screen time to find patterns.',
     icon: '🔍', groups: ['personal'], tools: ['none'],
     outward: false, heavy: false, category: 'Health', channel: 'patterns', popular: false,
     reads: ['food-diary', 'meds-reminders', 'workout-log', 'journal', 'habit-check', 'cycle-tracker'],
-    rule: 'Keep every health log in one shared place, one row per day, plus local air pressure. Compare each factor with the same day, the next day and the day after. Wait for 30 days, and at least 10 days with a factor and 15 without, before naming a link; until then say it needs more data. Say it as a pattern in their logs, never a cause, and give the days of data and how many checks it ran. Suggest one small tweak at a time as a test, and re-check last month findings on new days. Never diagnose or change medicines; offer a summary for their GP. Red flags stop the analysis: a sudden worst-ever headache, fever with a stiff neck, or new weakness, numbness, speech or vision trouble means call 111 now; a new or changed pattern, first headaches after 65, or very frequent painkillers means see a GP soon.',
+    rule: 'Works for any symptom, not one condition. Keep every health log in one shared place, one row per day: food, exercise, sleep, screen time, supplements, mood, plus local air pressure. Compare each factor with the same day, the next day and the day after. Wait for 30 days, and at least 10 days with a factor and 15 without, before naming a link; until then say it needs more data. Say it as a pattern in their logs, never a cause, and give the days of data and how many checks it ran. Suggest one small tweak at a time as a test, and re-check last month findings on new days. Never diagnose or change medicines; offer a summary for their GP. Red flags stop the analysis: a sudden worst-ever headache, fever with a stiff neck, or new weakness, numbness, speech or vision trouble means call 111 now; a new or changed pattern, first headaches after 65, or very frequent painkillers means see a GP soon. For any symptom that is severe, sudden or getting worse fast, stop and tell them to get medical help now.',
     ask: [
-      { id: 'track', label: 'What do you want to get to the bottom of?', type: 'chips', multiple: true, options: ['Headaches', 'Low energy', 'Sleep', 'Mood', 'Gut', 'Skin'] },
+      { id: 'track', label: 'What do you want to get to the bottom of?', type: 'chips', multiple: true, options: ['Headaches', 'Tummy trouble', 'Nausea', 'Low energy', 'Sleep', 'Mood', 'Skin'] },
       { id: 'checkin', label: 'How often should it ask how you feel?', type: 'chips', options: ['Once a day', 'Morning and night', 'Only when I tell it'] },
       { id: 'review', label: 'When should it share what it finds?', type: 'chips', options: ['Every week', 'Every month'] },
     ],
@@ -561,8 +561,9 @@ export const SWAPS = [
   { id: 'journal', title: 'Journal app', icon: '📓', examples: 'Day One', nzd: 90, skills: ['journal'], fit: 'full' },
   { id: 'meds', title: 'Medication reminders', icon: '💊', examples: 'Medisafe', nzd: 75, skills: ['meds-reminders'], fit: 'part', note: 'it cannot see if a dose was taken, and has no pharmacy link.' },
   // Prices checked 19 Nov 2026 (research/health/audit-1.md): Bearable US$34.99, Migraine Buddy US$89.99 a year, at 1.82.
+  // Both tick the one general pattern spotter: the app is specific, the skill is not.
   { id: 'symptoms', title: 'Symptom tracker', icon: '🔍', examples: 'Bearable', nzd: 65, skills: ['pattern-spotter'], fit: 'full' },
-  { id: 'migraine', title: 'Migraine diary', icon: '🤕', examples: 'Migraine Buddy', nzd: 165, skills: ['pattern-spotter'], fit: 'part', note: 'no phone sensors, so you tell it how you slept.' },
+  { id: 'migraine', title: 'Migraine app', icon: '🤕', examples: 'Migraine Buddy', nzd: 165, skills: ['pattern-spotter'], fit: 'part', note: 'no phone sensors, so you tell it how you slept.' },
   { id: 'food', title: 'Calorie counter', icon: '🍎', examples: 'MyFitnessPal', nzd: 135, skills: ['food-diary'], fit: 'part', note: 'no barcode scanner, and counts from photos are estimates.' },
   { id: 'budget', title: 'Budget app', icon: '💰', examples: 'YNAB or PocketSmith', nzd: 200, skills: ['budget-helper'], fit: 'part', note: 'no live bank feeds. You send it a file from your bank, or tell it the numbers.' },
   { id: 'meals', title: 'Meal planner', icon: '🥗', examples: 'Plan to Eat', nzd: 90, skills: ['meal-planner'], fit: 'part', note: 'no cook mode screen or pantry barcode scanning.' },
@@ -621,7 +622,7 @@ export const TRY = {
   'code-partner': 'Fix the bug in the sign up form.',
   'resume-maker': 'Fit my CV to this job ad, as a PDF.',
   'cycle-tracker': 'My period started today.',
-  'pattern-spotter': 'Headache again, 6 out of 10. Any pattern yet?',
+  'pattern-spotter': 'Felt sick after lunch again. Any pattern yet?',
   'workout-log': 'Squats 3 sets of 8 at 60kg.',
   'journal': 'Ask me tonight how the day went.',
   'meds-reminders': 'Remind me to take my pill at 8am.',
