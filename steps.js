@@ -11,6 +11,11 @@
 
 import { GROUPS, SKILLS, TOOLS, APPS, SWAPS } from './catalogue.js';
 
+// Round 6: a person can come back and change the assistant they have.
+export const NEW_BOX = 'Set up a new one';
+export const CHANGE_BOX = 'Change the one I have';
+const isUpgrade = (a) => a && a.existing === CHANGE_BOX;
+
 const has = (a, g) => Array.isArray(a.groups) && a.groups.includes(g);
 const isAdv = (a) => a && a.mode === 'advanced';
 
@@ -73,9 +78,21 @@ const BASE_STEPS = [
     title: 'First, who are you?',
     lead: 'A few basics so we can make this yours.',
     fields: [
+      { id: 'existing', type: 'chips', noOwn: true, label: 'Is this a new assistant?', short: 'Assistant', options: [NEW_BOX, CHANGE_BOX] },
       { id: 'name', type: 'text', label: 'Your name' },
       { id: 'email', type: 'email', label: 'Email', help: 'Only our small NZ team reads your answers. They reach us by email through FormSubmit, a simple forwarding service, which keeps a copy for up to 30 days. Ask any time and we will delete them.' },
       { id: 'region', type: 'text', label: 'Town or city', optional: true },
+    ],
+  },
+  {
+    // Round 6: only when they are changing the assistant they already have.
+    id: 'upgrade',
+    title: 'Change your assistant',
+    lead: 'Tick anything new on the next screens. Nothing you already have gets undone.',
+    when: (a) => isUpgrade(a),
+    fields: [
+      { id: 'boxname', type: 'text', label: "Your assistant's short name", optional: true, help: 'For example sam-smith. Not sure? Leave it blank, your name and email are enough.' },
+      { id: 'changes', type: 'textarea', label: 'Anything to change or take away?', optional: true, help: 'For example: move my check-in to 6am, or stop the meal plan.' },
     ],
   },
   {
@@ -93,6 +110,7 @@ const BASE_STEPS = [
     when: (a) => has(a, 'personal') && !isAdv(a),
     fields: [
       { id: 'household', type: 'chips', label: 'Who is in your household?', multiple: true, options: ['Just me', 'Partner', 'Kids', 'Flatmates', 'Elder parents'] },
+      { id: 'people', type: 'list', label: 'Their names and ages', optional: true, help: 'One per box, for example: Louie, 6 months. It helps with meal plans and filing photos by age.', addLabel: 'Add another person' },
       { id: 'busiest', type: 'chips', label: 'Busiest part of life right now?', multiple: true, options: ['Work', 'Home admin', 'Kids and school', 'Health', 'Money', 'Study'] },
     ],
   },
@@ -208,6 +226,7 @@ const BASE_STEPS = [
     fields: [
       { id: 'app', type: 'cards', label: 'Pick one', source: 'apps' },
       { id: 'users', type: 'chips', noOwn: true, label: 'Who else will use it?', options: ['Just me', 'Me plus 1', '2 to 5', 'More'] },
+      { id: 'shared', type: 'chips', noOwn: true, label: 'Does anyone else log in to that app as you?', short: 'Shared login', help: 'If you share one login, your assistant cannot tell you apart.', options: ['No, just me', 'Yes, we share a login'] },
       { id: 'tone', type: 'cards', label: 'How should it talk?', options: [
         { value: 'warm', title: 'Warm and friendly', icon: '😊' },
         { value: 'sharp', title: 'Short and sharp', icon: '🔪' },

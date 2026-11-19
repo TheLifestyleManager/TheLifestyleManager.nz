@@ -1,7 +1,7 @@
 // Run: node check.mjs   (no deps). Walks every group path and checks the brief.
 import assert from 'node:assert/strict';
 import { GROUPS, SKILLS, TOOLS, APPS, SWAPS, TRY } from './catalogue.js';
-import { STEPS, visibleSteps, validate, applySwaps, swapChoices } from './steps.js';
+import { STEPS, visibleSteps, validate, applySwaps, swapChoices, NEW_BOX, CHANGE_BOX } from './steps.js';
 import { buildBrief, briefText, FILES_RULE } from './brief.js';
 
 const DASH = /[–—]/;
@@ -182,6 +182,36 @@ for (const w of SWAPS) {
   ok(briefText(b).includes('Never diagnose') && briefText(b).includes('call 111'), 'pattern spotter rule and red flags in the brief');
   for (const id of ['symptoms', 'migraine']) ok(applySwaps({ groups: ['personal'], swaps: [id] }).includes('pattern-spotter'), `swap ${id} ticks the pattern spotter`);
   ok(buildBrief({ groups: ['personal'], skills: ['pattern-spotter'], name: 'X', email: 'x@y.z' }).jobs[0].reads.length === 0, 'reads nothing when alone');
+}
+
+{ // round 6: from Britt's real setup. Upgrades, names and ages, shared logins.
+  const base = { groups: ['personal'], name: 'Britt', email: 'b@example.com', household: ['Partner', 'Kids'],
+    people: ['Louie, 6 months', ' '], users: 'Just me', shared: 'Yes, we share a login',
+    skills: ['habit-check', 'meal-planner'], 'skill.habit-check.time': ['7am'] };
+  const fresh = buildBrief({ ...base, existing: NEW_BOX });
+  ok(fresh.upgrade === null && briefText(fresh).startsWith('HERMES STARTER BRIEF'), 'new box: starter brief');
+  ok(!visibleSteps({ ...base, existing: NEW_BOX }).some(s => s.id === 'upgrade'), 'new box: no upgrade screen');
+  ok(fresh.soul.who.includes('Names and ages: Louie, 6 months') && !fresh.soul.who.includes('; '), 'names and ages reach the soul');
+  ok(fresh.kit.SHARED_LOGIN === true && briefText(fresh).includes('Shared login: yes'), 'shared login flagged');
+  ok(buildBrief({ ...base, shared: 'No, just me' }).kit.SHARED_LOGIN === false, 'own login not flagged');
+  const about = visibleSteps({}).find(s => s.id === 'about');
+  ok(validate(about, { name: 'X', email: 'x@y.z' }).existing, 'new or change is required');
+
+  const blind = buildBrief({ ...base, existing: CHANGE_BOX, boxname: 'brittany-orr', changes: 'Move my check-in to 6am' });
+  ok(visibleSteps({ ...base, existing: CHANGE_BOX }).some(s => s.id === 'upgrade'), 'change: upgrade screen shows');
+  ok(blind.upgrade.known === false && blind.upgrade.box === 'brittany-orr', 'change without past answers');
+  const bt = briefText(blind);
+  ok(bt.startsWith('HERMES UPGRADE BRIEF') && bt.includes('not saved on this device') && bt.includes('Move my check-in to 6am') && bt.includes('Never undo'), 'upgrade brief text');
+  ok(!DASH.test(bt.split('--- JSON ---')[0]), 'upgrade brief has no dashes');
+
+  const prev = { jobs: [{ id: 'habit-check', settings: { time: ['7am'] } }, { id: 'meal-planner', settings: {} }, { id: 'nope' }], own: ['Old idea'], slug: 'brittany-orr' };
+  const up = buildBrief({ ...base, existing: CHANGE_BOX, _prev: prev, skills: ['habit-check', 'voice-notes'],
+    'skill.habit-check.time': ['6am'], 'own.skills': ['Old idea', 'New idea'] }).upgrade;
+  ok(up.known && up.box === 'brittany-orr', 'past answers: box from last send');
+  ok(up.add.join() === 'voice-notes' && up.remove.sort().join() === 'meal-planner,nope' && up.changed.join() === 'habit-check', 'diff: add, turn off, changed');
+  ok(up.addOwn.join() === 'New idea', 'diff: new own ideas only');
+  ok(!('_prev' in buildBrief({ ...base, existing: CHANGE_BOX, _prev: prev }).answers), 'past answers stay out of raw answers');
+  ok(buildBrief({ ...base, existing: CHANGE_BOX, _prev: 'junk' }).upgrade.known === false, 'junk past answers do not crash');
 }
 
 console.log(`PASS ${n} checks`);

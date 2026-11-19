@@ -1,12 +1,14 @@
 // Hermes setup wizard: step engine, rendering, send. Plain ES module.
 // Worker B file. Styles come from Worker A. Data from catalogue.js, steps.js, brief.js.
 import { GROUPS, SKILLS, TOOLS, APPS, SWAPS, TRY } from './catalogue.js';
-import { visibleSteps, validate, OWN, ownValues, listValues, takesOwn, swapChoices, applySwaps } from './steps.js';
+import { visibleSteps, validate, OWN, ownValues, listValues, takesOwn, swapChoices, applySwaps, CHANGE_BOX } from './steps.js';
 import { buildBrief, briefText } from './brief.js';
 
 const ALIAS = 'josh@parkup.nz'; // FormSubmit target (activated 18 Nov 2026); can swap for the random alias later
 const CONTACT_EMAIL = 'josh@parkup.nz'; // public email shown in the send fallback
 const KEY = 'tlm-wizard-v1';
+const SENT_KEY = 'tlm-sent-v1'; // round 6: what this device sent last, so they can come back and change it
+const KEPT_NOTE = 'Your answers stay on this device. Come back here any time to change your assistant.';
 const PROMISE = 'It always asks you before it sends, posts or pays anything.';
 const KEY_NOTE = '🔑 When we hand it over, you get your own encryption key. Keep it somewhere safe. Without it, no one can open your data, not even us.';
 const GROWS = 'Your kit can grow. After setup, just tell it "make this a skill" and it builds a new one with you.';
@@ -22,6 +24,7 @@ let doneTries = [];       // first week lines kept for the done screen
 let honeyInput = null;    // honeypot on the check screen
 let pendingErrStep = null; // when set, render shows this step's errors
 let saved = null;          // draft read from storage at boot
+let upgradeStart = false;  // opened from a past send: start on the upgrade screen
 
 /* ---------- small helpers ---------- */
 function el(tag, cls, text) {
@@ -296,11 +299,12 @@ function fieldEl(f) {
     wrap.appendChild(label);
   }
   const descIds = [];
+  let hp = null;
   if (f.help) {
-    const hp = el('p', 'field-help', f.help);
+    hp = el('p', 'field-help', f.help);
     hp.id = 'h-' + f.id;
     descIds.push(hp.id);
-    wrap.appendChild(hp);
+    if (!isChoice) wrap.appendChild(hp); // choice fields put it under their legend
   }
   if (f.type === 'text' || f.type === 'email') {
     const inp = el('input', 'input');
@@ -329,6 +333,7 @@ function fieldEl(f) {
     } else {
       fs.setAttribute('aria-label', f.label);
     }
+    if (hp) fs.appendChild(hp);
     const box = el('div', f.type === 'cards' ? 'cards' : 'chips');
     if (f.source === 'skills' && a.mode === 'advanced') box.classList.add('is-list'); // compact rows
     for (const opt of resolveOptions(f)) {
@@ -601,11 +606,32 @@ function renderDone() {
   if (doneTries.length) sec.appendChild(firstWeekEl(doneTries));
   sec.appendChild(el('p', 'kit-note', KEY_NOTE));
   sec.appendChild(el('p', 'kit-note', GROWS));
+  sec.appendChild(el('p', 'kit-note', KEPT_NOTE));
   return { root: sec, focus: h };
+}
+// Keep what was sent, so a later visit can prefill and the brief can say what changed.
+function keepSent() {
+  try {
+    const b = buildBrief(a);
+    const answers = { ...a };
+    delete answers._prev;
+    localStorage.setItem(SENT_KEY, JSON.stringify({
+      answers,
+      prev: { jobs: b.jobs.map(j => ({ id: j.id, settings: j.settings })), own: b.ownSkills.map(o => o.title), slug: (b.upgrade && b.upgrade.box) || b.kit.BIZ_SLUG },
+    }));
+  } catch (e) { /* private mode, fine */ }
+}
+function loadSent() {
+  try {
+    const d = JSON.parse(localStorage.getItem(SENT_KEY) || 'null');
+    if (d && d.answers && typeof d.answers === 'object' && d.prev && typeof d.prev === 'object') return d;
+  } catch (e) { /* ignore broken storage */ }
+  return null;
 }
 function finishDone() { // shared by a real success and the honeypot's fake one
   doneName = String(a.name || '').trim().split(/\s+/)[0] || 'friend'; // keep the first name for the done screen
   try { doneTries = buildBrief(a).firstWeek; } catch (e) { doneTries = []; } // kept before the answers clear
+  keepSent();
   try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
   a = {};
   sending = false;
@@ -676,7 +702,7 @@ async function send() {
       body: JSON.stringify({
         name: a.name,
         email: a.email,
-        _subject: 'New Hermes brief: ' + (a.name || 'unknown'),
+        _subject: (a.existing === CHANGE_BOX ? 'Hermes upgrade brief: ' : 'New Hermes brief: ') + (a.name || 'unknown'),
         _template: 'box',
         _captcha: 'false',
         _honey: '',
@@ -792,7 +818,8 @@ function start(mode) {
   a.mode = mode === 'simple' && saved && saved.mode === 'advanced' ? 'advanced' : mode;
   save();
   started = true;
-  stepId = firstStepToOpen(visibleSteps(a));
+  stepId = upgradeStart ? 'upgrade' : firstStepToOpen(visibleSteps(a));
+  upgradeStart = false;
   render();
 }
 /* ---------- page chrome: theme toggle, floating header, intro stats and chat preview ---------- */
@@ -953,10 +980,16 @@ function init() {
   scrollReveal();
   chatPreview();
   saved = loadSaved();
+  const sent = saved ? null : loadSent();
+  const btn = document.getElementById('start');
   if (saved) {
     a = saved;
-    const btn = document.getElementById('start');
     if (btn) btn.textContent = 'Welcome back, carry on';
+  } else if (sent) { // they sent one before: start a change, prefilled with last time's answers
+    a = { ...sent.answers, existing: CHANGE_BOX, _prev: sent.prev, changes: '', boxname: sent.answers.boxname || sent.prev.slug || '' };
+    saved = a;
+    upgradeStart = true;
+    if (btn) btn.textContent = 'Change your assistant';
   }
   document.getElementById('start')?.addEventListener('click', () => start('simple'));
   document.getElementById('start-advanced')?.addEventListener('click', () => start('advanced'));

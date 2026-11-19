@@ -12,7 +12,7 @@
 // briefText is the one place arrays are joined for reading.
 
 import { GROUPS, SKILLS, TOOLS, APPS, SWAPS, TRY } from './catalogue.js';
-import { STEPS, visibleSteps, OWN, ownValues, listValues, swapChoices, takesOwn } from './steps.js';
+import { STEPS, visibleSteps, OWN, ownValues, listValues, swapChoices, takesOwn, CHANGE_BOX } from './steps.js';
 // Round 4: own answers (<fieldId>.own) merge in wherever their field is read:
 // multi-pick fields get them appended, single-pick fields use theirs first.
 // Own skills (own.skills) get a channel each. delivery says how it sends things.
@@ -154,6 +154,27 @@ function collectTech(answers) {
   return tech;
 }
 
+// Round 6: an upgrade brief says what changes on a box that already exists.
+// answers._prev is what this device sent last time ({ jobs, own, slug }), so the
+// brief can list what is new, what to turn off and which settings moved.
+function upgradeInfo(answers, jobs, ownSkills) {
+  const prev = answers._prev && typeof answers._prev === 'object' ? answers._prev : null;
+  const up = {
+    box: String(answers.boxname || '').trim() || (prev && typeof prev.slug === 'string' ? prev.slug : ''),
+    changes: String(answers.changes || '').trim(),
+    known: !!prev,
+  };
+  if (prev) {
+    const before = new Map(arr(prev.jobs).filter(j => j && j.id).map(j => [j.id, JSON.stringify(j.settings || {})]));
+    up.add = jobs.filter(j => !before.has(j.id)).map(j => j.id);
+    up.remove = [...before.keys()].filter(id => !jobs.some(j => j.id === id));
+    up.changed = jobs.filter(j => before.has(j.id) && before.get(j.id) !== JSON.stringify(j.settings)).map(j => j.id);
+    const ownBefore = arr(prev.own);
+    up.addOwn = ownSkills.map(o => o.title).filter(t => !ownBefore.includes(t));
+  }
+  return up;
+}
+
 export function buildBrief(a) {
   const answers = a && typeof a === 'object' ? a : {};
   const mode = answers.mode === 'advanced' ? 'advanced' : 'simple';
@@ -201,8 +222,12 @@ export function buildBrief(a) {
   if (answers.region) whoBits.push(`${String(answers.region).trim()} area`);
   const household = shown('personal') ? many(answers, 'household') : [];
   if (household.length) whoBits.push(`Household: ${household.join(', ')}`);
+  const people = shown('personal') ? listValues(answers.people) : [];
+  if (people.length) whoBits.push(`Names and ages: ${people.join('; ')}`);
   if (shown('business') && one(answers, 'team')) whoBits.push(`Team size: ${one(answers, 'team')}`);
   if (answers.users) whoBits.push(`People using it: ${userInfo.label}`);
+  const sharedLogin = answers.shared === 'Yes, we share a login';
+  if (sharedLogin) whoBits.push('Shares one chat login with someone else, so the assistant cannot tell them apart');
   const who = whoBits.length ? whoBits.join('. ') + '.' : 'Not given.';
 
   // soul.business: the context text in advanced, otherwise the branch answers,
@@ -277,6 +302,7 @@ export function buildBrief(a) {
       CHAT_APP: APPS.some(x => x.id === answers.app) ? answers.app : (answers.app ? String(answers.app) : 'unsure'),
       USERS: userInfo.users,
       USERS_LABEL: userInfo.label,
+      SHARED_LOGIN: sharedLogin,
     },
     discord: { categories },
     soul: {
@@ -296,6 +322,7 @@ export function buildBrief(a) {
     notes,
     tech,
     vm,
+    upgrade: shown('upgrade') ? upgradeInfo(answers, jobs, ownSkills) : null,
     // raw answers, but only fields on the screens they actually saw
     answers: Object.fromEntries(visibleSteps(answers)
       .flatMap(st => st.fields.flatMap(f => {
@@ -315,9 +342,28 @@ export function briefText(brief) {
   const lines = [];
   const push = (s = '') => lines.push(s);
 
-  push('HERMES STARTER BRIEF');
+  const up = b.upgrade && typeof b.upgrade === 'object' ? b.upgrade : null;
+  push(up ? 'HERMES UPGRADE BRIEF' : 'HERMES STARTER BRIEF');
   push('====================');
   push();
+
+  if (up) {
+    const sTitle = titleLookup(SKILLS);
+    const names = (ids) => arr(ids).map(sTitle).join(', ');
+    push('UPGRADE OF AN ASSISTANT THEY ALREADY HAVE');
+    push(`Box: ${up.box || 'Not given, match by name and email'}`);
+    if (up.known) {
+      push(`Add: ${names(up.add) || 'nothing new'}`);
+      if (arr(up.addOwn).length) push(`Add their own ideas: ${arr(up.addOwn).join(', ')}`);
+      push(`Turn off: ${names(up.remove) || 'nothing'}`);
+      push(`Settings changed: ${names(up.changed) || 'none'}`);
+    } else {
+      push('Their earlier answers are not saved on this device. Compare the kit below with the box and add only what is missing.');
+    }
+    if (up.changes) push(`What to change or take away: ${up.changes}`);
+    push('Rule: add to the box. Never undo or rebuild what is already set up. The hermes, needs-you and alerts channels already exist.');
+    push();
+  }
 
   push(`Mode: ${b.mode === 'advanced' ? 'Advanced setup' : 'Simple setup'}`);
   push();
@@ -337,6 +383,7 @@ export function briefText(brief) {
   push(`Short name: ${b.kit?.BIZ_SLUG || ''}`);
   push(`Talk to it in: ${aTitle(b.kit?.CHAT_APP) || 'Not sure yet'}`);
   push(`People using it: ${b.kit?.USERS_LABEL || 'Just me'}`);
+  if (b.kit?.SHARED_LOGIN) push('Shared login: yes, the assistant cannot tell them apart');
   push(`Channels: ${b.kit?.CHANNELS || ''}`);
   push();
 
@@ -406,6 +453,7 @@ export function briefText(brief) {
 
   push('YOUR MACHINE');
   push(b.vm?.fits ? 'All picks fit a small box.' : 'Some picks are heavy, we may size the box up.');
+  if (up) push('Check there is room on their box before adding anything heavy.');
   push();
 
   push('YOUR PRIVACY');
